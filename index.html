@@ -242,7 +242,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/25/helloworld/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/15/LSI/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Bauklotzen">
@@ -261,7 +261,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/01/25/helloworld/" itemprop="url">helloworld</a></h1>
+                <a class="post-title-link" href="/2017/10/15/LSI/" itemprop="url">对LSI模块的理解</a></h1>
         
 
         <div class="post-meta">
@@ -273,8 +273,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-25T14:12:15+08:00">
-                2018-01-25
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-15T17:10:29+08:00">
+                2017-10-15
               </time>
             
 
@@ -313,7 +313,1373 @@
       
         
           
-            <h2 id="你好啊，黄鱼韬又重-开博客啦！"><a href="#你好啊，黄鱼韬又重-开博客啦！" class="headerlink" title="你好啊，黄鱼韬又重 开博客啦！"></a>你好啊，黄鱼韬又重 开博客啦！</h2>
+            <h2 id="LSI的基本假设"><a href="#LSI的基本假设" class="headerlink" title="LSI的基本假设"></a>LSI的基本假设</h2><p>如果两个词多次出现在同一文档中，则这两个词在语义上具有相似性。LSI使用大量的文本构建一个矩阵，该矩阵的一行代表一个词，一列代表一个文档，矩阵元素代表该词在文档中出现的次数。该矩阵为稀疏矩阵。</p>
+<h2 id="算法流程"><a href="#算法流程" class="headerlink" title="算法流程"></a>算法流程</h2><ol>
+<li>构建矩阵 <em>W</em></li>
+<li>对矩阵 <em>W</em> 进行降维，找到 <em>W</em> 的一个低阶相似（降维的原因在下一部分说明）</li>
+<li>对降维后的矩阵 <em>W</em> 做 <em>SVD</em> 分解，得到三个矩阵 <code>U(c×l)</code>、<code>S(l×l)</code>、<code>V(n×l)</code></li>
+<li>对物品 <em>i</em> 通过 <code>d_i = U(transpose)d_i</code> 映射到隐式空间，<code>d_i</code> 为 <em>W</em> 中第 <em>i</em> 列</li>
+<li>对内容 <em>c</em> 通过 <code>w = =w_cVS</code> 映射到隐式空间，<code>w_c</code> 为 <em>W</em> 中第 <em>c</em> 行</li>
+<li>对用户 <em>u</em> 通过类似第 5. 的方法映射到隐式空间，其中向量的每一项表示这个用户对特定物品的过去评分</li>
+<li>把投影的物品向量和投影的用户向量做余弦相似度计算，使用topN方法取其前n个形成推荐列表</li>
+</ol>
+<h2 id="降维的原因"><a href="#降维的原因" class="headerlink" title="降维的原因"></a>降维的原因</h2><ul>
+<li>初始矩阵W太大，难以处理</li>
+<li>初始矩阵W有噪音，通过降维处理可以达到去噪音的效果</li>
+<li>初试矩阵W过于稀疏</li>
+<li>经过降维处理后，可以解决部分同义词问题和二义性问题</li>
+</ul>
+<h2 id="输入输出"><a href="#输入输出" class="headerlink" title="输入输出"></a>输入输出</h2><h3 id="输入1"><a href="#输入1" class="headerlink" title="输入1"></a>输入1</h3><p>数据名：LI_text<br>读取路径：file:///data/ubdata/svd-test/with-directors-and-mainactors/label-item-matrix.coo<br>格式：Dataset&lt;Row&gt;<br>内容：矩阵的每行是两个整数和一个浮点数，为了方便在后面构造矩阵，设置浮点数都为1<br>中间操作：将LI_text转为LICSR，对其进行SVD分解，保留latent_rank个特征向量，再对物品进行投影降维<br>输出：items_proj，其每行代表一个物品</p>
+<h3 id="输入2"><a href="#输入2" class="headerlink" title="输入2"></a>输入2</h3><p>数据名：UI_text<br>读取路径：file:///data/ubdata/svd-test/with-directors-and-mainactors/user-item-train.dat<br>格式：Dataset&lt;Row&gt;<br>内容：矩阵的每行是两个整数和一个浮点数，为了方便在后面构造矩阵，设置浮点数都为1<br>中间操作：将UI_text转为UICOO，对用户进行投影降维<br>输出：users_proj，其每行代表一个用户</p>
+<h3 id="输出"><a href="#输出" class="headerlink" title="输出"></a>输出</h3><p>数据名：recomm_list<br>格式：Dataset&lt;Row&gt;<br>操作函数：topN(users_proj, items_proj, N)<br>内容：有三列，分别为相似度、用户id、物品id</p>
+<h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><p>为了解决传统向量空间模型存在的多义性和同义性问题，需要找到一种模型，能够捕获到单词之间的相关性，LSI正式基于这样的使用场景提出的模型。该模型使用SVD来对单词-文档矩阵进行分解。SVD可以看作是从单词-文档矩阵中发现不相关的索引变量(因子)，将原来的数据映射到语义空间内。在单词-文档矩阵中不相似的两个文档，可能在语义空间内比较相似。<br>使用场景举例:</p>
+<ul>
+<li>发现词与词之间的关系，可用于同义词、歧义词检测</li>
+<li>在翻译好的文档上进行训练，可以发现不同语言的相似文档，用于跨语言检索</li>
+<li>通过查询映射到语义空间，可进行信息检索</li>
+<li>在低维语义空间对文档进行比较，用于文档聚类和文档分类</li>
+</ul>
+<p>总的来说，LSI的使用场景是为了计算文本内容的相似度。</p>
+<h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><ul>
+<li>SVD只是一种数学变换，并无法对应成现实中的概念，因此新生成的矩阵的解释性比较差</li>
+<li>在一篇文档中，LSI模型会忽略词语的先后顺序，但词语的先后顺序对文档内容是有很大影响的</li>
+<li>LSI有一个改进PLSA效果要好于LSA</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/01/helloworld/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Bauklotzen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xkefx.com1.z0.glb.clouddn.com/hyt.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bauklotzen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/10/01/helloworld/" itemprop="url">你好啊，黄鱼韬又重开博客啦！</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-01T17:12:16+08:00">
+                2017-10-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>新的博客会把我学习机器学习过程中的笔记、心得等都发布出来。</p>
+<p>主要供日后的自己发现自己现在的不足。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/01/14/wishwall-conclusion/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Bauklotzen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xkefx.com1.z0.glb.clouddn.com/hyt.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bauklotzen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/01/14/wishwall-conclusion/" itemprop="url">许愿墙 3.0 产品总结文档</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-01-14T14:43:21+08:00">
+                2016-01-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><strong>撰写人：黄宇韬</strong></p>
+<h2 id="1-总体简介"><a href="#1-总体简介" class="headerlink" title="1. 总体简介"></a>1. 总体简介</h2><p>许愿墙 3. 0 于 2015 年 11 月 28 日 0：00 上线，至 2015 年 12 月 4 日晚 12：59 分下线。产品上线期间通过与广东工业大学学生会的积极合作，产品得到了不错的推广效果，用户数量级超出预期。但在上线期间，已在线的产品仍有<strong>多次</strong>修改，修改次数亦超出预期，说明项目的开发、管理上面仍存在许多问题。</p>
+<h2 id="2-详细数据"><a href="#2-详细数据" class="headerlink" title="2. 详细数据"></a>2. 详细数据</h2><p><strong>总数据：</strong></p>
+<p><img src="http://7xkefx.com1.z0.glb.clouddn.com/%E6%80%BB%E6%95%B0%E6%8D%AE.png" alt="总数据"></p>
+<ul>
+<li>愿望数： 2223 条【女生愿望数：1095 条 男生愿望数：1128 条 </li>
+<li>女生实物类愿望数： 622 条</li>
+<li>女生耗时类愿望数： 473 条</li>
+<li>男生实物类愿望数： 333 条</li>
+<li>男生耗时类愿望数： 795 条</li>
+<li>女生未被领取愿望数： 611 条</li>
+<li>女生被领取愿望数： 484 条</li>
+<li>女生被完成愿望数： 153 条</li>
+<li>男生未被领取愿望数： 591 条</li>
+<li>男生被领取愿望数： 531 条</li>
+<li>男生被完成愿望数： 118 条</li>
+<li>祝福数： 493 条</li>
+<li>用户数： 5509 个 【男生：3252 个 女生：2017 个 无性别：240 个</li>
+<li>消息数： 7092 条</li>
+<li>API 请求数： 93 万次</li>
+</ul>
+<h2 id="3-数据分析"><a href="#3-数据分析" class="headerlink" title="3. 数据分析"></a>3. 数据分析</h2><ul>
+<li>男生愿望数多达 1128 条，男生们只利用了 12 月 4 日一天的权力反转时间就许了超过女生 6 天以来的愿望数总和</li>
+<li>愿望的最快被摘时间，在发布后 5 秒时间内即被领取，堪称秒接</li>
+<li>女生愿望中，实物类略多于耗时类，实物类关键词为：益力多、零食、小型电子产品如耳机鼠标等。耗时类关键词为：唱歌</li>
+<li>男生愿望中，耗时类远超过实物类，耗时类关键词为：唱歌</li>
+<li>女生许愿的 6 天时间内，女生未被领取愿望数多达 611 条，在男生用户群如此庞大的情况下，可见男生们并不是非常活跃（可能原因为女生愿望中实物类较多导致）</li>
+<li>女生的愿望中，带图片的愿望被领取的比例大于未带图的愿望，头像为“靓丽”人像的愿望被领取的比例较大，可见男生们倾向于领取“有图有真相”的愿望</li>
+<li>在最后一天的权力反转中，男生许下的大部分是耗时类愿望，如唱歌、微信上道晚安或早安等（你懂得）结合部分用户反馈，不少用户有“一键添加微信好友”的需求</li>
+<li>存在这样一种现象，若某用户的首个愿望被领取过，则其之后许下的愿望也往往被领取了，而首个愿望未被领取的，则其之后要么不再许愿望，要么许下的也未被领取，可谓“人生赢家恒赢”</li>
+<li>在最后一天的权力反转中，男生愿望的被领取率接近 50% </li>
+<li>一个可能的原因–因男生愿望耗时类远超过实物类，实现难度较小，因此男生的愿望被领取率较高</li>
+<li>可不严谨地认为每两个许下愿望的男生中就有一个男生的愿望被领取</li>
+<li>在最后一天的权力反转中，被完成率（男生确认完成的）接近 25%，可见广工大的女生们真的是相当给力</li>
+<li>祝福数共 493 条，可见用户在祝福墙上的活跃程度远不及许愿墙，因运营期间在祝福墙上策划的活动（联合某些组织展开线上活动，如集赞送礼品等）并未展开，因此对于许多用户来说祝福墙的实际意义仅剩下“祝福”</li>
+<li>用户分享愿望或祝福的方式受到很大的限制，因未能有效指引用户点击右上角分享到朋友圈（此方法存在一个弊端，不能具体定向到某一特定的愿望或祝福，而只能定向到整个页面），因此许多用户选择截图分享到朋友圈，该方式实际上非常限制许愿墙的有效传播</li>
+<li>用户比例中，男生：女生 ≈ 3:2 该比例远远超出预期，在许愿墙主战场为大学城校区的情况（僧多粥少）下，女生用户数竟如此巨大，可猜测女生们对【女生节，女生们都是女神】这一模式非常感兴趣，从而形成了女生之间良好的信息传达</li>
+<li>存在部分外校用户</li>
+<li>无性别用户多达 240 个，且其中有不少是【宝贵的女生用户】，因为了防止恶意修改性别做了仅读入微信性别一次的设置，不少女生因无简单方便的渠道修改性别而苦恼</li>
+<li>消息数共 7092 条，除去系统消息仍有不少聊天消息，可见愿望对象聊天室的功能确实是需要的</li>
+<li>API 请求数达到了惊人的 93 万次，远远超过去年 2.0 版本的 36 万次，考虑到用户总数的量级，可见产品的用户粘性较高</li>
+<li>用户增长最快的时期均为校学生会官方微信订阅号推送许愿墙推广文章后，由此可见与校学生会的合作是保证用户量级的关键，与校学生会的合作非常重要</li>
+</ul>
+<h2 id="4-竞品分析"><a href="#4-竞品分析" class="headerlink" title="4. 竞品分析"></a>4. 竞品分析</h2><p><em>仍待补充</em></p>
+<p>许愿墙 3.0 （以下简称 3.0）并无直接竞争产品，因此只与 许愿墙 2.0 （以下简称 2.0）作对比。</p>
+<ol>
+<li>3.0 较 2.0 主要区别在 3.0 新增暗恋匹配功能和祝福墙功能，通过用户反馈可知，暗恋匹配是非常令人惊喜的一个功能</li>
+<li>3.0 在 UI 上的用户反馈信息多于 2.0 </li>
+<li>3.0 用户数仅用不到 3 天的时间既超过了 2.0 在 7 天时间里的用户数总和</li>
+<li>3.0 的 API 请求数远超 2.0</li>
+<li>3.0 的搜索和筛选功能不易使用</li>
+</ol>
+<h2 id="5-用户的主要反馈"><a href="#5-用户的主要反馈" class="headerlink" title="5. 用户的主要反馈"></a>5. 用户的主要反馈</h2><p><em>仍待补充</em></p>
+<ul>
+<li>两列布局</li>
+<li>暗恋匹配功能入口不明显（已解决）</li>
+<li>暗恋匹配对象只能填写一个、填写一次（？？？）</li>
+<li>图片服务不稳定（已解决）</li>
+<li>修改性别的问题</li>
+</ul>
+<h2 id="6-4-0-展望"><a href="#6-4-0-展望" class="headerlink" title="6. 4.0 展望"></a>6. 4.0 展望</h2><p><em>仍待补充</em></p>
+<ul>
+<li>新增愿望、祝福详情页，支持一键分享到朋友圈</li>
+<li>简化搜索与筛选功能</li>
+<li>直观明了的用户指引</li>
+<li>后台管理系统、后台管理系统、后台管理系统</li>
+<li>提前完成开发，预留充足的时间进行测试</li>
+<li>支持一键添加微信好友，为避免造成用户骚扰，仅支持在合理的情况下，面对合理的对象，方可一键添加微信好友</li>
+<li>优化视觉上的过渡效果</li>
+<li>现有暗恋匹配功能太过干涩，可在匹配成功后增添能让用户惊喜的元素</li>
+<li>关于我们页的展示形式</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/08/16/cscw-summer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Bauklotzen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xkefx.com1.z0.glb.clouddn.com/hyt.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bauklotzen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/08/16/cscw-summer/" itemprop="url">记一次协同前端的捞仔夏令营</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-08-16T23:32:22+08:00">
+                2015-08-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>想来时间过得可真快。</p>
+<p>明明在几个月前，还没确认 2015 捞仔夏令营大名单那会儿，总还觉得没谱。</p>
+<p>没想到一转眼夏令营就结束了，丝毫没有给我反思自己“暴君”到底当得如何的时间。</p>
+<p>在这一切之前，那会儿尚处于“权( hei )力( guo )交接”的时候，经理逐步地将组长需要承担的事务交接给我，那时我虽然有意识要尽快把事情都自己搞定，好让经理这些大三狗们能够专心找实习，不必为组里的事情太过分心。但是实际上一旦出了什么事情，第一反应还是先找经理求助，想寻求他的经验来尽快解决麻烦事。那会儿发生的事情都挺顺利的，准备招新、比试、面试、考核，都按着计划进行。虽然忙，但做事情的时候都是充满激情的，因为面对着一群嗷嗷待……学的小朋友们，憧憬着协同前端组更美好的未来。</p>
+<p>但是时间来到了 5 月 4 号。那天下了好大雨，晚上还要进行一次考核例会，明明早早就在工一了，最后却差点缺席了这次的例会。那晚发生了什么就不再去回忆了，大概就是那一晚开始本来干劲满满的暴君整个人却布满了黑线吧。还记得那晚经理跟捞文还有我安安静静的在工一呆到很晚才回宿舍，虽然没说什么话，但那时候身边有他们两个在，心里是真的很感激的。</p>
+<p>可从那天开始，整个人就很消极了，躺在宿舍床上什么都不想干，开始怀疑自己的情商跟能力。好在暴君从小就特别注重【恢复】能力加点，最后考核也算是顺利结束了，成功召唤出了哈、猪、果、毛、瓜、bra 六大鲜肉。</p>
+<p>时间很快就来到暑假。每天培训、打码、撸图、学习，周六来个产品需求讨论会，制作 RandomLow ……</p>
+<p>可以看到每个人都很努力，天天都在进步，我们也逐渐成为一个真正的团队，甚至，对我来说，这就是我的第二个家。</p>
+<p><img src="http://7xkefx.com1.z0.glb.clouddn.com/IMG_3325.JPG" alt="傻翠我的高清大图呢！！！"></p>
+<p>我心里常常这样想，我也是失去了非常珍贵的，才换来了你们吧，哈哈！</p>
+<p>这一路过来，要我给自己打个分的话，我想我会……</p>
+<p>bu gao su ni hia hia hia.</p>
+<h2 id="最棒的暑假"><a href="#最棒的暑假" class="headerlink" title="最棒的暑假"></a>最棒的暑假</h2><p>这绝对是我过过的最棒的暑假了！没有之一！</p>
+<p>早早就制定好了暑假的培训计划，接下来就是填坑的时间啦！通过准备培训的内容，自己也复习了一遍知识，真是极好的体验！虽然偶尔准备培训内容到凌晨两三点，对捞文来说是可以减肥，对我来说就是……反正吃完一瓶蛋白粉体重还是 120 斤。我猜是捞文的体重秤把人秤轻了，捞文这个心机婊肯定是故意调轻的。总的来说，大家周一到周五都很认真的在学习，大家的进步也是有目共睹的，而且大家的同期学习进度大大优于去年的这个时候的我们，嗯，肯定是暴君和捞文制定的培训计划优于经理和熊制定的计划的缘故！←_←</p>
+<p><img src="http://7xkefx.com1.z0.glb.clouddn.com/IMG_3225.JPG" alt="蛙哥的精彩解说"></p>
+<p><img src="http://7xkefx.com1.z0.glb.clouddn.com/IMG_3228.JPG" alt="并没有打瞌睡"></p>
+<p>周六的早上开个产品大会讨论需求，晚上偷偷的用投影仪看个电影吃个零食，或者打打狼人，啧啧啧。只是，零食怎么有点少？？？不对啊，经理和熊明明买了一大箱的零食……大瓜，为什么你总是一幅没吃饱的样子！！！</p>
+<p><img src="http://7xkefx.com1.z0.glb.clouddn.com/IMG_3276.JPG" alt="大瓜没吃饱"></p>
+<p>周日组队去看看电影，一起吃东西。这样充实且不枯燥的暑假，真的还想再过它个几次，然而明年的这个暑假，身为老家伙的我们就要滚去实习了吧，光是想想就觉得有点小失落呢。</p>
+<p><img src="http://7xkefx.com1.z0.glb.clouddn.com/IMG_3241.JPG" alt="大 bra 归来"></p>
+<p>顺带告诉你们 bra 不仅各种设计上的有才，很会玩，他还很会找视频 ←_←  什么鬼畜、搞笑、Hentai…….找他就对了！</p>
+<h2 id="深圳游记"><a href="#深圳游记" class="headerlink" title="深圳游记"></a>深圳游记</h2><p>首先要谢谢林大队、大喵、大毛的游前准备，作为曾经的黄大队深知准备旅游事项的麻烦与不易。</p>
+<p>这次深圳玩耍的事情全权交给了大瓜，我们的林大队。虽然我们的大部分时间在交通工具上度过，但是在西涌玩耍的时间里还是过的很开心自在的。去哪里玩真的不是重点，而是和谁去。跟捞们一起去出去耍，怎么都开心！</p>
+<p>抢小猪的被子，宠幸 bra (shang lai zi ji dong, en），宠幸经理，宠幸翔，捞文？腻了腻了 ←_← 还有解决被困的喵！看似是很普通的宠幸日常，但想起来还是会笑哈哈的一副傻样。</p>
+<p><img src="http://7xkefx.com1.z0.glb.clouddn.com/DSC_5025.JPG" alt="捞文与海"></p>
+<p>尤其喜欢大家彻夜谈心的时刻！哈哈哈哈哈哈！</p>
+<h2 id="为什么要这么严厉"><a href="#为什么要这么严厉" class="headerlink" title="为什么要这么严厉"></a>为什么要这么严厉</h2><p>在这里！严肃！点名！林大瓜！</p>
+<p>迟到几次了？？？</p>
+<p>检讨呢？？？</p>
+<p>今年夏令营特别强调纪律这件事，那是因为协同前端组从 Max 哥那一届开始成为各大工作室中非常不一样的存在，自然不能到了我们手上就泯然众组了，而纪律对于任何一个人，任何一个团队来说都是非常重要的，所以指定严格详细的制度，并且成员都严格的遵守这个制度是我们组变得更优秀的必要条件。</p>
+<p>毕竟暴君不希望用更严肃的方式去惩罚不遵守纪律的行为，而且再严肃一点就不好玩了…….好吧其实是暴君想不到更可怕的暴政了 T T ，但是惩罚的意义只有一个，让我们能够好好反思自己在做一些重要的事情的时候对事情的重视程度，进而更趋近与成为一个靠谱的人。</p>
+<p>有一件事我很确定，那就是无论在外部条件下使用什么手段去改变一个人，只要那个人没有打心底里意识到问题所在，那么那些手段终究是没有意义的。</p>
+<p>所以，检讨不是重点，冰沙不是重点，真的打心底里知道“这件事很重要，我一定不能迟到”，如果突然发生了某件意料之外的事情导致一定会迟到，那也要提前告诉大家，不要浪费大家的时间……这才是重点。</p>
+<h2 id="Better"><a href="#Better" class="headerlink" title="Better"></a>Better</h2><p>前端组自 Max 哥这一届开始，由经理他们逐步填坑变得与众不同。现在到了我们这里，一定要发扬光大啊！此处应脑补捞文的头像。</p>
+<p>总之，耍嘴炮当然容易，要做起来可不简单。下学期大家更努力地去做一些好玩的事情吧！下学期见！</p>
+<h2 id="日后也许会有更新，对，日后"><a href="#日后也许会有更新，对，日后" class="headerlink" title="日后也许会有更新，对，日后"></a>日后也许会有更新，对，日后</h2>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/07/22/js/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Bauklotzen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xkefx.com1.z0.glb.clouddn.com/hyt.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bauklotzen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/07/22/js/" itemprop="url">JavaScript 学习笔记之执行上下文、作用域、作用域链以及 call() 和 apply() 的用法</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-07-22T09:24:15+08:00">
+                2015-07-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="执行上下文"><a href="#执行上下文" class="headerlink" title="执行上下文"></a><strong>执行上下文</strong></h2><h3 id="定义："><a href="#定义：" class="headerlink" title="定义："></a><em>定义：</em></h3><p>每当控制器到达 JavaScript 可执行代码的时候，控制器就进入了一个执行上下文。<br>执行上下文是个抽象的概念。</p>
+<p>一系列活动的执行上下文从逻辑上形成一个栈。栈底总是全局上下文，栈顶是当前（活动的）执行上下文。当在不同的执行上下文间切换（退出的而进入新的执行上下文）的时候，栈会被修改（通过压栈或者退栈的形式）。</p>
+<p>如果将执行上下文的栈以数组的形式来表现。</p>
+<p><code>JsStack = []</code></p>
+<p>每次控制器进入一个函数（哪怕该函数被递归调用或者作为构造器），都会发生压栈的操作。</p>
+<p>当一开始初始化代码的时候，先是全局代码压入栈中。</p>
+<pre><code>JsStack = [
+  globalContext
+]
+</code></pre><p>定义一个函数 foo</p>
+<pre><code>function foo() {
+  return;
+}
+foo();
+</code></pre><p>一旦控制器进入这个函数，就会有新的元素会被压栈到栈顶。</p>
+<pre><code>JsStack = [
+  functionContext,
+  globalContext
+]
+</code></pre><p>每次函数返回，退出当前活动的执行上下文时，JsStack 就会被执行对应的退栈操作。当完成之后 foo() 之后，JsStack 就只剩下一个执行上下文–globalContext，直到整个程序结束。</p>
+<p>资料来源：</p>
+<p><a href="http://goddyzhao.tumblr.com/post/10020230352/execution-context" target="_blank" rel="noopener">http://goddyzhao.tumblr.com/post/10020230352/execution-context</a></p>
+<hr>
+<h2 id="作用域"><a href="#作用域" class="headerlink" title="作用域"></a><strong>作用域</strong></h2><p>作用域有全局作用域和局部作用域两个概念。</p>
+<p>其中，处于局部作用域内可以访问全局作用域的变量，而处于局部作用域外面是不可以访问局部作用域内的变量的。</p>
+<p>先来看下下面的一段代码：</p>
+<pre><code>var globalData = &quot;This is a global data&quot;;//全局变量
+
+function globalFunction() {
+    var localData = &quot;This is a locall data&quot;//局部变量
+    console.log(globalData);//打印出&quot;This is a global data&quot;，说明可以访问到全局变量
+    console.log(localData);//打印出&quot;This is a locall data&quot;
+    globalData = &quot;Changed the global data&quot;;//修改全局变量
+    console.log(globalData);打印出&quot;Changed the global data&quot;，修改全局变量成功
+    function innerFunction() {
+        var innerData = &quot;This is a inner data&quot;;
+        console.log(innerData);
+        console.log(localData);//打印出&quot;This is a locall data&quot;
+        console.log(globalData);//打印出&quot;Changed the global data&quot;，说明可以访问到全局变量
+    }
+    innerFunction();
+    //console.log(innerData);如果取消注释这句话，则会出现错误
+}
+
+globalFunction();
+</code></pre><p>注释为实际打印出来的效果，因此我们可以看到：处于全局作用域的变量 globalData 可以在局部作用域内访问，并且可以在局部作用域内修改其值。但如果在 globalFunction() 外部去访问 locallData 这个局部变量的话，则会报错。</p>
+<p>透过 innerFunction() 可以进一步理解作用域的概念。当我们在局部作用域 globalFunction() 内访问更深一层次的局部内局部作用域 innerFunction() 里的 innderData 变量时，出现了错误。</p>
+<hr>
+<h2 id="作用域链"><a href="#作用域链" class="headerlink" title="作用域链"></a><strong>作用域链</strong></h2><p>我们已经知道，在 JavaScript 里一切皆为对象。函数也是对象，拥有一些属性和一系列给 JavaScript 引擎访问的内部属性，其中有一个内部属性是 [[scope]] ，这个内部属性包含了函数被创建时作用域中所有对象的集合，这个集合就是函数的作用域链–[[scope]]，它决定了函数可以访问哪些数据。</p>
+<p>当一个函数创建后，它的 [[scope]] 就会填充其可以访问的数据对象。</p>
+<p>如下面的函数：</p>
+<pre><code>function add(num1,num2) {
+    var sum = num1 + num2;
+    return sum;
+}
+</code></pre><p>当函数 add 刚被创建时， [[scope]] 中会填入一个包含所有全局变量的全局对象。</p>
+<p><img src="http://pic002.cnblogs.com/images/2011/36987/2011090414435366.jpg" alt="add 刚被创建时的作用域链"></p>
+<p>当函数 add 在执行时，会增加几个变量，在执行函数的过程中会被用到，例如：</p>
+<pre><code>var total = add(5,10);
+</code></pre><p>执行函数的时候就会创建前文所提到的执行上下文了，这也是它的一个内部对象。执行上下文定义了函数执行时的环境，其作用域链用来解析标识符（即变量的名字）</p>
+<p>这个时候，执行函数 <code>add(5, 10)</code> 的作用域链会被初始化为 [[scope]] 所包含的对象。</p>
+<p>其执行上下文中所出现的变量会在函数中按顺序复制到作用域链中，这些变量组成了一个叫做“活动对象(activation object)”的对象</p>
+<p>活动对包含了所有局部变量、命名参数、参数集合、this，然后此对象推入作用域链的前端。</p>
+<p><img src="http://pic002.cnblogs.com/images/2011/36987/2011090414444843.jpg" alt="执行函数时的作用域链"></p>
+<p>当执行上下文销毁后，活动对象也会销毁。</p>
+<p>在函数执行过程中，每遇到一个变量，都会经历一次标识符解析过程以决定从哪里获取和存储数据。该过程从作用域链头部，也就是从活动对象开始搜索，查找同名的标识符，如果找到了就使用这个标识符对应的变量，如果没找到继续搜索作用域链中的下一个对象，如果搜索完所有对象都未找到，则认为该标识符未定义。函数执行过程中，每个标识符都要经历这样的搜索过程。</p>
+<p><strong>从作用域链看代码优化</strong></p>
+<p>我们已经知道了作用域链的结构，在执行一个函数的过程，我们读取一个变量的值，通过标识符去查找，如果标识符的位置很深，那么读取其值的速度就会很慢。因此，查找全局变量是一个很耗费时间的做法，但如果我们需要多次读写某个全局变量时，我们可以采取一个方法：通过一次查找，把它保存在某个局部变量中，再对其进行操作。</p>
+<p>参考资料：</p>
+<p><a href="http://www.cnblogs.com/lhb25/archive/2011/09/06/javascript-scope-chain.html" target="_blank" rel="noopener">http://www.cnblogs.com/lhb25/archive/2011/09/06/javascript-scope-chain.html</a></p>
+<p><a href="https://github.com/goddyZhao/Translation/blob/master/JavaScript/%E4%BD%9C%E7%94%A8%E5%9F%9F%E9%93%BE%EF%BC%88Scope%20Chain%EF%BC%89.md" target="_blank" rel="noopener">https://github.com/goddyZhao/Translation/blob/master/JavaScript/%E4%BD%9C%E7%94%A8%E5%9F%9F%E9%93%BE%EF%BC%88Scope%20Chain%EF%BC%89.md</a></p>
+<hr>
+<h2 id="call-和-apply-方法的补充"><a href="#call-和-apply-方法的补充" class="headerlink" title="call() 和 apply() 方法的补充"></a><strong>call() 和 apply() 方法的补充</strong></h2><h3 id="定义：-1"><a href="#定义：-1" class="headerlink" title="定义："></a><em>定义</em>：</h3><p><strong>call</strong>:调用一个对象的一个方法，以另一个对象替换当前对象。</p>
+<p><strong>apply</strong>:应用某一对象的一个方法，用另一个对象替换当前对象。</p>
+<p>根据定义我们可以知道 call() 和 apply() 都是用来改变引用对象的。</p>
+<p>还是通过代码来讲最直接，示例如下，我们首先创建一个对象，它拥有 talk 这个方法</p>
+<pre><code>var low = {
+    word: &apos;Hey&apos;,
+    talk: function(people) {
+      console.log(this.word + &apos;,&apos; + people);
+      console.log(this === low);
+    }
+};
+</code></pre><p>我们先直接通过 low 对象来引用这个方法    </p>
+<pre><code>low.talk(&apos;LaoWen&apos;); 
+</code></pre><p>浏览器输出：</p>
+<pre><code>Hey,LaoWen
+true
+</code></pre><p>可以看出当前 this 指向的是引用 talk 方法的 low 对象。</p>
+<p>我们另外创建一个对象 fish ：</p>
+<pre><code>var fish = {
+    word: &apos;Hi&apos;
+};
+</code></pre><p>这个时候通过使用 call 方法来使得 fish 这个对象也能使用 talk 方法</p>
+<pre><code>low.talk.call(fish, &apos;BaoJun&apos;);
+</code></pre><p>浏览器输出：</p>
+<pre><code>Hi,BaoJun
+false
+</code></pre><p>从控制台打印的 false 可以知道 call 方法将引用 talk 方法的对象不是 low 了。call 方法已经将引用对象改成了 fish 。</p>
+<h2 id="call-与-apply-的不同"><a href="#call-与-apply-的不同" class="headerlink" title="call 与 apply 的不同"></a><strong>call 与 apply 的不同</strong></h2><p>call 方法与 apply 方法的不同就是 call 方法第二个传递的参数值可以是任意的，而 apply 方法第二个传递的参数值必须为数组。</p>
+<p>例：</p>
+<pre><code>low.talk.call(fish, &apos;BaoJun&apos;);
+low.talk.apply(fish, [&apos;BaoJun&apos;]);
+</code></pre><p>以上两行代码效果相同。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/07/13/css/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Bauklotzen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xkefx.com1.z0.glb.clouddn.com/hyt.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bauklotzen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/07/13/css/" itemprop="url">CSS 的一些常见重点、难点</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-07-13T21:25:15+08:00">
+                2015-07-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="margin-amp-padding-用法"><a href="#margin-amp-padding-用法" class="headerlink" title="margin &amp; padding 用法"></a>margin &amp; padding 用法</h2><p>首先解释一下什么是 <strong>margin</strong></p>
+<p>根据 w3school 的定义：<br>margin 简写属性在一个声明中设置所有外边距属性。该属性可以有 1 到 4 个值。</p>
+<p>其可能的值有：<br><strong>auto</strong>        浏览器计算外边距。<br><strong>length</strong>        规定以具体单位计的外边距值，比如像素、厘米等。默认值是 0px。<br><strong>%</strong>            规定基于父元素的宽度的百分比的外边距。<br><strong>inherit</strong>        规定应该从父元素继承外边距。</p>
+<p>注意事项：<br>设置 4 个值时遵循 TRBL 规则，即 top right bottom left 上 右 下 左 的瞬时间规则。<br>设置 2 个值时，第一个值表示 上 下 一致使用的同一个值，第二个值表示 左 右 一致使用的同一个值。比如</p>
+<pre><code>margin: 1px 2px; 
+margin: 1px 2px 1px 2px;
+</code></pre><p>上面两个是等效的</p>
+<p>特殊用法：</p>
+<pre><code>margin: 0 auto;
+</code></pre><p>意为上下边距为 0 ，左右边距根据宽度自适应。以上写法可以达到居中的效果。(但要注意给居中的元素一个宽度，并且该元素不能浮动，否则居中无效)</p>
+<p>现在来解释下 <strong>padding</strong></p>
+<p>根据 w3school 的定义：<br>这个简写属性设置元素所有内边距的宽度，或者设置各边上内边距的宽度。行内非替换元素上设置的内边距不会影响行高计算；因此，如果一个元素既有内边距又有背景，从视觉上看可能会延伸到其他行，有可能还会与其他内容重叠。元素的背景会延伸穿过内边距。不允许指定负边距值。</p>
+<p>其值的设定和 <strong>margin</strong> 类似，但不允许设置为<strong>负值</strong>。</p>
+<hr>
+<h2 id="border-的占位"><a href="#border-的占位" class="headerlink" title="border 的占位"></a>border 的占位</h2><p>当给某一元素设置四条等宽的 <strong>border</strong> 时，值得注意的是，边的起点为<strong>没有设置 border 时元素的最左上角那一点</strong>。元素的宽度与高度不变，但其位置相比没有设置边时，会被设置的边往右下方挤。 </p>
+<hr>
+<h2 id="行内元素和块级元素"><a href="#行内元素和块级元素" class="headerlink" title="行内元素和块级元素"></a>行内元素和块级元素</h2><p><em>以下内容来自百度</em></p>
+<p>块级元素具有以下特点：</p>
+<p>1.总是在新行上开始，占据一整行；<br>2.高度，行高以及外边距和内边距都可控制；<br>3.宽带始终是与浏览器宽度一样，与内容无关；<br>4.它可以容纳内联元素和其他块元素。</p>
+<p>行内元素的特点：</p>
+<p>1.和其他元素都在一行上；<br>2.高，行高及外边距和内边距部分可改变；<br>3.宽度只与内容有关；<br>4.行内元素只能容纳文本或者其他行内元素。<br>不可以设置宽高，其宽度随着内容增加，高度随字体大小而改变，内联元素可以设置外边界，但是外边界不对上下起作用，只能对左右起作用，也可以设置内边界，但是内边界在ie6中不对上下起作用，只能对左右起作用</p>
+<p>值得一提的是，块级元素可以通过设置为 display: inline-block; 使其可以在行内容纳其他行内元素。</p>
+<p>以下链接记录了哪些是行内元素，哪些是块级元素<br><a href="http://q.cnblogs.com/q/36975/" target="_blank" rel="noopener">http://q.cnblogs.com/q/36975/</a></p>
+<hr>
+<h2 id="absolute-amp-relative-amp-fixed-的区别"><a href="#absolute-amp-relative-amp-fixed-的区别" class="headerlink" title="absolute &amp; relative &amp; fixed 的区别"></a>absolute &amp; relative &amp; fixed 的区别</h2><p>讲到 <strong>absolute</strong> 时需要先知道文档流的概念。</p>
+<p>简单来说，文档流是文档中可显示对象在排列时所占用的位置。</p>
+<p>当给某元素设置 position 为 absolute 时，它会<strong>脱离原来的文档流</strong>，就好像这个元素不存在了一样，漂浮在其<strong>没有设置为 absolute 时的文档位置的地方</strong>，其他元素会占据其原来的位置。也就是说 <strong>absolute</strong> 是相对<strong>最近 position 为 relative 或 absolute 的父元素</strong>定位，默认相对与 <strong>body</strong> 定位。</p>
+<p>而设置为 <strong>relative</strong> 时，元素并没有脱离文档流，这个时候给其设置 <strong>top</strong> 跟 <strong>left</strong> 值，它只会在原来位置的基础上进行肉眼上的移动，而其在文档流上的位置并没有发生改变。</p>
+<p><strong>fixed</strong> 将元素直接以浏览器窗口为定位对象，给其设置 <strong>top</strong> 跟 <strong>left</strong> 值时，元素将相对固定在浏览器窗口的对应位置上（起点为浏览器窗口的最左上方那一个点）</p>
+<hr>
+<h2 id="盒子模型"><a href="#盒子模型" class="headerlink" title="盒子模型"></a>盒子模型</h2><p><em>以下内容来自百科</em></p>
+<p>网页设计中常听的属性名：内容(content)、填充(padding)、边框(border)、边界(margin)， CSS盒子模式都具备这些属性。</p>
+<p>这些属性我们可以把它转移到我们日常生活中的盒子（箱子）上来理解，日常生活中所见的盒子也就是能装东西的一种箱子，也具有这些属性，所以叫它盒子模式。<br>CSS盒子模型就是在网页设计中经常用到的CSS技术所使用的一种思维模型。</p>
+<p>每个盒子都有：边界、边框、填充、内容四个属性；<br>每个属性都包括四个部分：上、右、下、左；这四部分可同时设置，也可分别设置；里的抗震辅料厚度，而边框有大小和颜色之分，我们又可以理解为生活中所见盒子的厚度以及这个盒子是用什么颜色材料做成的，边界就是该盒子与其它东西要保留多大距离。</p>
+<p>内容（CONTENT）就是盒子里装的东西；<br>而填充(PADDING)就是怕盒子里装的东西（贵重的）损坏而添加的泡沫或者其它抗震的辅料；<br>边框(BORDER)就是盒子本身了；至于边界(MARGIN)则说明盒子摆放的时候的不能全部堆在一起，要留一定空隙保持通风，同时也为了方便取出。在网页设计上，内容常指文字、图片等元素，但是也可以是小盒子（DIV嵌套），与现实生活中盒子不同的是，现实生活中的东西一般不能大于盒子，否则盒子会被撑坏的，而CSS盒子具有弹性，里面的东西大过盒子本身最多把它撑大，但它不会损坏的。<br>填充只有宽度属性，可以理解为生活中盒子每个HTML标记都可看作一个盒子；</p>
+<hr>
+<h2 id="选择器优先级"><a href="#选择器优先级" class="headerlink" title="选择器优先级"></a>选择器优先级</h2><p>优先级从高到低排序如下：</p>
+<p>1.在属性后面使用 !important 的优先级最高，它会覆盖页面内任何位置定义的元素样式（不支持 IE6）</p>
+<p>2.在html中给元素标签加 style ，但不符合结构与样式分离的原则，故不推荐使用</p>
+<p>3.id选择器</p>
+<p>4.类选择器、属性选择器、伪类选择器定义（伪类概念：<a href="http://www.w3school.com.cn/css/css_pseudo_classes.asp" target="_blank" rel="noopener">http://www.w3school.com.cn/css/css_pseudo_classes.asp</a>）</p>
+<p>5.类型选择器</p>
+<p>6.通配选择器</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/06/10/wishwall/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Bauklotzen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xkefx.com1.z0.glb.clouddn.com/hyt.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bauklotzen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/06/10/wishwall/" itemprop="url">女生节许愿墙 3.0 产品文档 V0.0</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-06-10T23:32:22+08:00">
+                2015-06-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="1-总体介绍"><a href="#1-总体介绍" class="headerlink" title="1. 总体介绍"></a>1. 总体介绍</h2><ul>
+<li><strong>修改版本</strong></li>
+</ul>
+<p>基于 <strong>女生节许愿墙 2.0</strong> 产品文档（修改人：杜幸易）进行修改。</p>
+<p>修改人：黄宇韬</p>
+<p>修改内容：</p>
+<ol>
+<li>制定大纲</li>
+<li>更改部分需求</li>
+<li>添加新的产品功能</li>
+<li>产品结构变更</li>
+<li>更换前后端实现技术</li>
+</ol>
+<ul>
+<li><strong>产品概略</strong></li>
+</ul>
+<p>广东工业大学协同软件研发中心前端组独立开发的女生节许愿墙 3.0 版。该产品主要面向校内学生，使用微信公众平台对接用户，校内学生可以使用微信账号进行登录。</p>
+<ul>
+<li><strong>产品结构图</strong></li>
+</ul>
+<p><img src="http://7xkefx.com1.z0.glb.clouddn.com/%E8%AE%B8%E6%84%BF%E5%A2%99%2B3.0%20(2).png" alt="许愿墙 3.0 产品结构图"></p>
+<p>链接：<a href="http://naotu.baidu.com/file/64e69171c1c228fc154d7f182191c85e?token=255492252b0a77e2" target="_blank" rel="noopener">http://naotu.baidu.com/file/64e69171c1c228fc154d7f182191c85e?token=255492252b0a77e2</a></p>
+<ul>
+<li><strong>产品定位</strong></li>
+</ul>
+<p>校园、社交、活动</p>
+<ul>
+<li><strong>用户范围</strong></li>
+</ul>
+<p>主要用户：广东工业大学（ 大学城 / 龙洞 / 东风路 / 番禺 ）四校区的微信学生群体；</p>
+<p>边缘用户：其他高校的微信学生群体。</p>
+<ul>
+<li><strong>合作伙伴</strong></li>
+</ul>
+<p>广东工业大学校学生会<br>广州歌莫信息技术有限公司</p>
+<ul>
+<li><strong>一个完整的愿望完成流程</strong></li>
+</ul>
+<p>女生发布愿望到许愿墙 →<br>男生从许愿墙中领取该愿望 →<br>男生获得女生个人信息，同时女生获得男生个人信息 →<br>男生完成愿望，女生确认愿望已<strong>完成</strong></p>
+<hr>
+<h2 id="2-功能说明"><a href="#2-功能说明" class="headerlink" title="2. 功能说明"></a>2. 功能说明</h2><ul>
+<li><strong>流程指引</strong></li>
+</ul>
+<p>用户首次登陆后对产品功能进行简单介绍。</p>
+<ul>
+<li><strong>发布按钮</strong></li>
+</ul>
+<p>按钮位于页面右上角，用户点击后根据用户性别提供相应功能。</p>
+<p>####女生：</p>
+<ol>
+<li>选择发布内容的类型，弹出提示框，用户有两个选项选择 愿望（附带单选框，选择实物类或耗时类） 或 祝福 </li>
+<li>填写内容</li>
+<li>选择图片（可选，每次最多可上传 1 张图片）</li>
+<li>填写个人信息（ 姓名 / 校区 / 学院 / 长号 / 短号 ），填写的个人信息将会自动同步到<strong>个人中心</strong>的<strong>个人信息管理</strong>处，并保存的数据库。若数据库已储存个人信息，则个人信息将会自动填充进表单</li>
+<li>确认发布</li>
+<li>弹出提示框（是否发布成功），若不成功则提示错误信息，成功则返回至首页</li>
+</ol>
+<p>####男生：</p>
+<ol>
+<li>填写祝福内容</li>
+<li>选择图片（可选，每次最多可上传 1 张图片）</li>
+<li>填写个人信息（ 姓名 / 校区 / 学院 / 长号 / 短号 ），填写的个人信息将会自动同步到<strong>个人中心</strong>的<strong>个人信息管理</strong>处，并保存的数据库。若数据库已储存个人信息，则个人信息将会自动填充进表单</li>
+<li>确认发布</li>
+<li>弹出提示框（是否发布成功），若不成功则提示错误信息，成功则返回至首页</li>
+</ol>
+<p>####注意事项：</p>
+<ol>
+<li>发布的文字内容限定在 140 字以内</li>
+<li>每次最多可发布 1 张图片</li>
+<li>当某愿望被某男生领取并进行后，系统将自动把最短愿望存活期时长设定为三天，三天后仍未完成该愿望的男生将得到一个 HR 警告</li>
+<li>获得两个及两个以上 HR 警告的男生将会被列入黑名单 </li>
+<li>未被完成的愿望的时间和状态将被重置，重新推送到许愿墙列表中</li>
+<li>一个女生可以发布的愿望数量不受限制</li>
+<li>若愿望一直未被领取，该愿望不会消失<br>（黑名单中的用户只能浏览信息，不能发布、领取愿望，不能发布祝福内容，不能点赞）</li>
+</ol>
+<p>待补充。</p>
+<ul>
+<li><strong>活动广告位</strong></li>
+</ul>
+<p>用来发布线上活动的内容图片或通知全体用户的提示图片。</p>
+<p>线上活动例：女生反馈日（功能反转）、校学生会活动、淘宝街、最佳祝福（点赞数最多的祝福）等。</p>
+<ul>
+<li><strong>搜索框</strong></li>
+</ul>
+<p>用来搜索特定的愿望，如搜索用户名可获得某用户发布的内容，搜索关键字可获得包含该关键字的愿望或祝福。</p>
+<p>注：使用搜索框后的搜索结果只在相应的 tab 里显示对应的内容，如 A 女性用户既许过愿望，也发过祝福，则 B 用户在搜索 A 用户用户名的时候，如果当前 tab 为许愿墙，则只显示 A 用户的历史愿望列表。</p>
+<ul>
+<li><strong>筛选框</strong></li>
+</ul>
+<p>用来筛选特定信息。如筛选校区用户，实物类或耗时类愿望，按赞数排序。</p>
+<p>在许愿墙列表下筛选条件包括：</p>
+<p>按校区 「大学城」/「龙洞」/「东风路」/「全部」</p>
+<p>按类型 「实物」/「耗时类」/「全部」</p>
+<p>在祝福墙列表下筛选条件包括：</p>
+<p>按校区 「大学城」/「龙洞」/「东风路」/「全部」</p>
+<p>按赞数 「从高到低」/「从低到高」/「全部」</p>
+<p>所有条件默认为全部（按时间排序）。</p>
+<ul>
+<li><strong>列表切换 tab</strong></li>
+</ul>
+<p>用来切换显示许愿墙列表和祝福墙列表。</p>
+<ul>
+<li><strong>侧边栏</strong></li>
+</ul>
+<p>点击左上按钮可打开侧边栏页。</p>
+<p>侧边栏包含：</p>
+<ol>
+<li>用户头像</li>
+<li>个人中心</li>
+<li>关于我们</li>
+<li>意见反馈</li>
+</ol>
+<p>个人中心处包含：</p>
+<ol>
+<li>愿望管理页：查看和修改用户自己的愿望信息的表单</li>
+<li>祝福管理页：查看和删除用户自己的祝福信息的表单</li>
+<li>系统消息箱页</li>
+<li>愿望对象聊天室页（含对象头像列表，可点选一个对象并开始一个聊天室）</li>
+<li>个人信息管理页：查看和修改用户自己的个人信息的表单</li>
+<li>暗恋匹配页</li>
+</ol>
+<p>点击个人中心后默认进入 1. 愿望管理页</p>
+<p>####愿望管理页注意事项</p>
+<ol>
+<li><p>女生方面：<br>a)    未被接下的愿望：可以执行「修改」/「删除」的操作(修改后时间重置为当前时间)；<br>b)    正在进行的愿望：<br>i.    若男生已经完成愿望，女生可以选择「确认完成」按钮确认愿望被完成并填写对男生的评价。<br>ii.    可以看到正在进行该女生愿望的男生的个人信息，点击其头像或通过“聊天”按钮跳转到愿望对象聊天室页（通过该行为跳转的，当前聊天对象为该男生）。</p>
+</li>
+<li><p>男生方面<br>a)    未完成的愿望：男生可以选择「无法完成」按钮，若男生确定无法完成则该愿望重置，且该男生得到一个 HR 警告。<br>b)    已完成的愿望：男生可以查看女生对自己的评价并进行回评。男生每完成一个愿望 HR 个数就减一，最低个数为零。</p>
+</li>
+</ol>
+<p>####祝福管理页注意事项</p>
+<p>在祝福管理页下可看到用户自己所发过的历史祝福，并可以对其历史祝福执行「删除」操作。</p>
+<p>####系统消息箱页注意事项</p>
+<p>消息箱存放一切可以提醒用户进程推进的消息：</p>
+<ol>
+<li>女生发布的愿望被某男生领取的时候；</li>
+<li>男生完成愿望后某女生回复确认的时候；</li>
+<li>聊天室有新信息的时候；</li>
+<li>男生接下某女生愿望后却确认无法完成的时候；</li>
+<li>系统更新的时候；</li>
+<li>暗恋匹配的时候。</li>
+</ol>
+<p>####愿望对象聊天室页注意事项</p>
+<p>女生方面：</p>
+<ol>
+<li>包含所有领取该女生愿望的男生对象的头像，可以通过点击头像来切换当前聊天对象</li>
+<li>可以看到历史聊天记录</li>
+</ol>
+<p>男生方面：</p>
+<ol>
+<li>包含所有该男生领取愿望的女生对象的头像，可以通过点击头像来切换当前聊天对象</li>
+<li>可以看到历史聊天记录</li>
+</ol>
+<p>####个人信息管理页注意事项</p>
+<p>该页面为一个可以查看和修改用户自己的个人信息的表单页。</p>
+<p>####暗恋匹配页注意事项</p>
+<p>该模块额外添加暗恋人姓名的选项，属于可填可不填类型。如匹配成功，则系统会自动通知双方彼此暗恋的事实。若中途修改该项则将重新尝试匹配。</p>
+<p>关于我们处包含：</p>
+<ol>
+<li>协同软件研发中心前端组介绍</li>
+<li>合作伙伴介绍</li>
+<li>在该页摇一摇出现彩蛋</li>
+</ol>
+<p>意见反馈处为一个提交反馈信息的表单。 </p>
+<p>彩蛋：待补充。</p>
+<ul>
+<li><strong>许愿墙列表</strong></li>
+</ul>
+<p>许愿墙列表包含所有未提交领取请求的愿望，排序方式为按时间排序。</p>
+<p>每一条愿望包括以下内容：</p>
+<ol>
+<li>用户头像</li>
+<li>用户名</li>
+<li>用户校区</li>
+<li>用户愿望类型</li>
+<li>用户愿望文字内容</li>
+<li>用户上传的一张图片（可选）</li>
+<li>领取愿望的按钮</li>
+</ol>
+<p>其中，点击用户头像可以进入到该用户的对外个人主页。</p>
+<p>个人主页包含：</p>
+<ol>
+<li>用户头像（点击可全屏查看该高清头像）</li>
+<li>用户名</li>
+<li>用户校区信息</li>
+<li>历史发布内容</li>
+</ol>
+<p>注：个人主页的相关逻辑同样适用于祝福墙列表。 </p>
+<ul>
+<li><strong>祝福墙列表</strong></li>
+</ul>
+<p>祝福墙列表包含所有用户提交的祝福，排序方式为按时间排序。</p>
+<p>每一条祝福包括以下内容：</p>
+<ol>
+<li>用户头像</li>
+<li>用户名</li>
+<li>用户校区</li>
+<li>用户祝福文字内容</li>
+<li>用户上传的一张图片（可选）</li>
+<li>点赞的按钮</li>
+</ol>
+<p>点击用户头像可以进入到该用户的对外个人主页。</p>
+<p>个人主页详情见<strong>许愿墙列表</strong>处。 </p>
+<hr>
+<h2 id="3-人机交互"><a href="#3-人机交互" class="headerlink" title="3. 人机交互"></a>3. 人机交互</h2><p>待补充。</p>
+<hr>
+<h2 id="4-界面设计"><a href="#4-界面设计" class="headerlink" title="4. 界面设计"></a>4. 界面设计</h2><p>待补充。</p>
+<hr>
+<h2 id="5-前端开发"><a href="#5-前端开发" class="headerlink" title="5. 前端开发"></a>5. 前端开发</h2><p>使用 AngularJS 框架进行开发。</p>
+<p>采用自适应网页布局。</p>
+<hr>
+<h2 id="6-后台开发"><a href="#6-后台开发" class="headerlink" title="6. 后台开发"></a>6. 后台开发</h2><p>使用 Node.js + Express</p>
+<hr>
+<h2 id="7-接口文档"><a href="#7-接口文档" class="headerlink" title="7. 接口文档"></a>7. 接口文档</h2><hr>
+<h2 id="8-后续开发"><a href="#8-后续开发" class="headerlink" title="8. 后续开发"></a>8. 后续开发</h2><hr>
+<h2 id="9-意见反馈和修改记录"><a href="#9-意见反馈和修改记录" class="headerlink" title="9. 意见反馈和修改记录"></a>9. 意见反馈和修改记录</h2><hr>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/10/fixedpage/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Bauklotzen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xkefx.com1.z0.glb.clouddn.com/hyt.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bauklotzen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/05/10/fixedpage/" itemprop="url">浅谈响应式网页设计</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-10T16:21:29+08:00">
+                2015-05-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>从接触前端以来，一直有听到所谓的响应式网页设计，但实际上对其概念也只是一知半解，大概只知道响应式网页设计就是能在各种分辨率下网页的依然能有良好的表现效果。刚好今年在做工作室的招新网站的时候，刚好面临响应式网页设计的需求，借此机会对响应式网页设计有了深一点的理解。如有写得不好或者不对的地方，欢迎留言补充，谢谢指教！</p>
+<hr>
+<h2 id="有几种响应式的方法？"><a href="#有几种响应式的方法？" class="headerlink" title="有几种响应式的方法？"></a>有几种响应式的方法？</h2><p>###<strong>1.</strong> 使用 CSS3 的媒体查询<br>这种方法是使用 CSS3 进行媒体查询，对应不同的分辨率设置不同的 CSS 属性。举个栗子：</p>
+<pre><code>@media screen and (max-width: 960px){
+    body {
+        background: #000;
+    }
+}   
+</code></pre><p>这段代码的意思就是在页面小于 960 px 的时候执行 {} 内的 CSS 代码。</p>
+<p>另外值得一提的是，上述代码中添加的 <strong>screen</strong> 是指当设备在打印页面时使用衬线字体，在屏幕上显示时用无衬线字体。因此，如果所写的页面不考虑打印的情况的话，可以去掉它。</p>
+<p>由此我们可以知道当使用这种方法时，我们需要考虑许多种不同分辨率的情况。</p>
+<p>所以使用这种方法的优点有：<br>1.针对性。对不同分辨率的设备有不同的预定义的一套 CSS 代码<br>2.易用性。这种方法通俗易懂，出现了哪些分辨率的问题可以很快想到解决办法<br>3.主流。这是目前应用最多的自适应网页设计方案</p>
+<p>缺点有：<br>1.复杂性。需要对不同设备率分辨率编写多套 CSS 代码。越细致的自适应网页可能代码数量越庞大，这会导致不易维护<br>2.需要多套设计图。对设计师的要求较高，设计师需要对不同分辨率的设备出几套设计图。</p>
+<p>###<strong>2.</strong>固定宽高比<br>招新网页用的就是这种方法。其大概意思就是，将页面主要内容（背景可占满整个页面）限定在一个固定的宽高比例中，页面内容的元素的定位，大小等全部用百分比的形式来描述，这样就实现了任意分辨率下，页面内容都是等比例缩小或放大的。</p>
+<p>限定页面内容的宽高比例用到了 Javascript 去动态的检测设备的分辨率。</p>
+<p>现将找新页面检测分辨率的代码抽象，如下:</p>
+<p>首先设置页面内容的类名为 animate-container<br><code>&lt;div class=&quot;animate-container&quot;&gt;</code></p>
+<p>Javascript 代码</p>
+<pre><code>function fixedPage(x,y) {
+  var oHeight = $window.height(),//窗口高度
+oWidth = $window.width(),//窗口宽度
+      cWidth = oHeight * (x/y),//等比例宽度
+      oMargin = (oWidth - cWidth)/2,//左右外间距
+      $container = $(&apos;.animate-container&apos;);
+  $container.css({&apos;width&apos;:cWidth,&apos;height&apos;:oHeight,&apos;left&apos;:oMargin});//设置高度为窗口高度，宽度为等比例缩放宽度，并居中显示
+}
+</code></pre><p>最后，招新项目中图片的宽高比为 750/1206<br>所以<br><code>fixedPage(750,1206);</code></p>
+<hr>
+<p>##招新页面链接<br><a href="http://www.gdutcscw.com/" target="_blank" rel="noopener">http://www.gdutcscw.com/</a></p>
+<hr>
+
           
         
       
@@ -398,7 +1764,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -406,6 +1772,15 @@
 
             
 
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
             
 
           </nav>

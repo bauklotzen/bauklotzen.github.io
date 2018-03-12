@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hyt.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/hyt.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/hyt.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/hyt.ico?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="产品," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="撰写人：黄宇韬 1. 总体简介许愿墙 3. 0 于 2015 年 11 月 28 日 0：00 上线，至 2015 年 12 月 4 日晚 12：59 分下线。产品上线期间通过与广东工业大学学生会的积极合作，产品得到了不错的推广效果，用户数量级超出预期。但在上线期间，已在线的产品仍有多次修改，修改次数亦超出预期，说明项目的开发、管理上面仍存在许多问题。 2. 详细数据总数据：   愿望数： 222">
+<meta name="keywords" content="产品">
+<meta property="og:type" content="article">
+<meta property="og:title" content="许愿墙 3.0 产品总结文档">
+<meta property="og:url" content="http://yoursite.com/2016/01/14/wishwall-conclusion/index.html">
+<meta property="og:site_name" content="Bauklotzen&#39;s Blog">
+<meta property="og:description" content="撰写人：黄宇韬 1. 总体简介许愿墙 3. 0 于 2015 年 11 月 28 日 0：00 上线，至 2015 年 12 月 4 日晚 12：59 分下线。产品上线期间通过与广东工业大学学生会的积极合作，产品得到了不错的推广效果，用户数量级超出预期。但在上线期间，已在线的产品仍有多次修改，修改次数亦超出预期，说明项目的开发、管理上面仍存在许多问题。 2. 详细数据总数据：   愿望数： 222">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://7xkefx.com1.z0.glb.clouddn.com/%E6%80%BB%E6%95%B0%E6%8D%AE.png">
+<meta property="og:updated_time" content="2018-03-12T13:24:09.874Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="许愿墙 3.0 产品总结文档">
+<meta name="twitter:description" content="撰写人：黄宇韬 1. 总体简介许愿墙 3. 0 于 2015 年 11 月 28 日 0：00 上线，至 2015 年 12 月 4 日晚 12：59 分下线。产品上线期间通过与广东工业大学学生会的积极合作，产品得到了不错的推广效果，用户数量级超出预期。但在上线期间，已在线的产品仍有多次修改，修改次数亦超出预期，说明项目的开发、管理上面仍存在许多问题。 2. 详细数据总数据：   愿望数： 222">
+<meta name="twitter:image" content="http://7xkefx.com1.z0.glb.clouddn.com/%E6%80%BB%E6%95%B0%E6%8D%AE.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/01/14/wishwall-conclusion/"/>
+
+
+
+
+
+  <title>许愿墙 3.0 产品总结文档 | Bauklotzen's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Bauklotzen's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">笔记 | 机器学习 | 杂谈</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/01/14/wishwall-conclusion/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Bauklotzen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xkefx.com1.z0.glb.clouddn.com/hyt.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bauklotzen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">许愿墙 3.0 产品总结文档</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-01-14T14:43:21+08:00">
+                2016-01-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>撰写人：黄宇韬</strong></p>
+<h2 id="1-总体简介"><a href="#1-总体简介" class="headerlink" title="1. 总体简介"></a>1. 总体简介</h2><p>许愿墙 3. 0 于 2015 年 11 月 28 日 0：00 上线，至 2015 年 12 月 4 日晚 12：59 分下线。产品上线期间通过与广东工业大学学生会的积极合作，产品得到了不错的推广效果，用户数量级超出预期。但在上线期间，已在线的产品仍有<strong>多次</strong>修改，修改次数亦超出预期，说明项目的开发、管理上面仍存在许多问题。</p>
+<h2 id="2-详细数据"><a href="#2-详细数据" class="headerlink" title="2. 详细数据"></a>2. 详细数据</h2><p><strong>总数据：</strong></p>
+<p><img src="http://7xkefx.com1.z0.glb.clouddn.com/%E6%80%BB%E6%95%B0%E6%8D%AE.png" alt="总数据"></p>
+<ul>
+<li>愿望数： 2223 条【女生愿望数：1095 条 男生愿望数：1128 条 </li>
+<li>女生实物类愿望数： 622 条</li>
+<li>女生耗时类愿望数： 473 条</li>
+<li>男生实物类愿望数： 333 条</li>
+<li>男生耗时类愿望数： 795 条</li>
+<li>女生未被领取愿望数： 611 条</li>
+<li>女生被领取愿望数： 484 条</li>
+<li>女生被完成愿望数： 153 条</li>
+<li>男生未被领取愿望数： 591 条</li>
+<li>男生被领取愿望数： 531 条</li>
+<li>男生被完成愿望数： 118 条</li>
+<li>祝福数： 493 条</li>
+<li>用户数： 5509 个 【男生：3252 个 女生：2017 个 无性别：240 个</li>
+<li>消息数： 7092 条</li>
+<li>API 请求数： 93 万次</li>
+</ul>
+<h2 id="3-数据分析"><a href="#3-数据分析" class="headerlink" title="3. 数据分析"></a>3. 数据分析</h2><ul>
+<li>男生愿望数多达 1128 条，男生们只利用了 12 月 4 日一天的权力反转时间就许了超过女生 6 天以来的愿望数总和</li>
+<li>愿望的最快被摘时间，在发布后 5 秒时间内即被领取，堪称秒接</li>
+<li>女生愿望中，实物类略多于耗时类，实物类关键词为：益力多、零食、小型电子产品如耳机鼠标等。耗时类关键词为：唱歌</li>
+<li>男生愿望中，耗时类远超过实物类，耗时类关键词为：唱歌</li>
+<li>女生许愿的 6 天时间内，女生未被领取愿望数多达 611 条，在男生用户群如此庞大的情况下，可见男生们并不是非常活跃（可能原因为女生愿望中实物类较多导致）</li>
+<li>女生的愿望中，带图片的愿望被领取的比例大于未带图的愿望，头像为“靓丽”人像的愿望被领取的比例较大，可见男生们倾向于领取“有图有真相”的愿望</li>
+<li>在最后一天的权力反转中，男生许下的大部分是耗时类愿望，如唱歌、微信上道晚安或早安等（你懂得）结合部分用户反馈，不少用户有“一键添加微信好友”的需求</li>
+<li>存在这样一种现象，若某用户的首个愿望被领取过，则其之后许下的愿望也往往被领取了，而首个愿望未被领取的，则其之后要么不再许愿望，要么许下的也未被领取，可谓“人生赢家恒赢”</li>
+<li>在最后一天的权力反转中，男生愿望的被领取率接近 50% </li>
+<li>一个可能的原因–因男生愿望耗时类远超过实物类，实现难度较小，因此男生的愿望被领取率较高</li>
+<li>可不严谨地认为每两个许下愿望的男生中就有一个男生的愿望被领取</li>
+<li>在最后一天的权力反转中，被完成率（男生确认完成的）接近 25%，可见广工大的女生们真的是相当给力</li>
+<li>祝福数共 493 条，可见用户在祝福墙上的活跃程度远不及许愿墙，因运营期间在祝福墙上策划的活动（联合某些组织展开线上活动，如集赞送礼品等）并未展开，因此对于许多用户来说祝福墙的实际意义仅剩下“祝福”</li>
+<li>用户分享愿望或祝福的方式受到很大的限制，因未能有效指引用户点击右上角分享到朋友圈（此方法存在一个弊端，不能具体定向到某一特定的愿望或祝福，而只能定向到整个页面），因此许多用户选择截图分享到朋友圈，该方式实际上非常限制许愿墙的有效传播</li>
+<li>用户比例中，男生：女生 ≈ 3:2 该比例远远超出预期，在许愿墙主战场为大学城校区的情况（僧多粥少）下，女生用户数竟如此巨大，可猜测女生们对【女生节，女生们都是女神】这一模式非常感兴趣，从而形成了女生之间良好的信息传达</li>
+<li>存在部分外校用户</li>
+<li>无性别用户多达 240 个，且其中有不少是【宝贵的女生用户】，因为了防止恶意修改性别做了仅读入微信性别一次的设置，不少女生因无简单方便的渠道修改性别而苦恼</li>
+<li>消息数共 7092 条，除去系统消息仍有不少聊天消息，可见愿望对象聊天室的功能确实是需要的</li>
+<li>API 请求数达到了惊人的 93 万次，远远超过去年 2.0 版本的 36 万次，考虑到用户总数的量级，可见产品的用户粘性较高</li>
+<li>用户增长最快的时期均为校学生会官方微信订阅号推送许愿墙推广文章后，由此可见与校学生会的合作是保证用户量级的关键，与校学生会的合作非常重要</li>
+</ul>
+<h2 id="4-竞品分析"><a href="#4-竞品分析" class="headerlink" title="4. 竞品分析"></a>4. 竞品分析</h2><p><em>仍待补充</em></p>
+<p>许愿墙 3.0 （以下简称 3.0）并无直接竞争产品，因此只与 许愿墙 2.0 （以下简称 2.0）作对比。</p>
+<ol>
+<li>3.0 较 2.0 主要区别在 3.0 新增暗恋匹配功能和祝福墙功能，通过用户反馈可知，暗恋匹配是非常令人惊喜的一个功能</li>
+<li>3.0 在 UI 上的用户反馈信息多于 2.0 </li>
+<li>3.0 用户数仅用不到 3 天的时间既超过了 2.0 在 7 天时间里的用户数总和</li>
+<li>3.0 的 API 请求数远超 2.0</li>
+<li>3.0 的搜索和筛选功能不易使用</li>
+</ol>
+<h2 id="5-用户的主要反馈"><a href="#5-用户的主要反馈" class="headerlink" title="5. 用户的主要反馈"></a>5. 用户的主要反馈</h2><p><em>仍待补充</em></p>
+<ul>
+<li>两列布局</li>
+<li>暗恋匹配功能入口不明显（已解决）</li>
+<li>暗恋匹配对象只能填写一个、填写一次（？？？）</li>
+<li>图片服务不稳定（已解决）</li>
+<li>修改性别的问题</li>
+</ul>
+<h2 id="6-4-0-展望"><a href="#6-4-0-展望" class="headerlink" title="6. 4.0 展望"></a>6. 4.0 展望</h2><p><em>仍待补充</em></p>
+<ul>
+<li>新增愿望、祝福详情页，支持一键分享到朋友圈</li>
+<li>简化搜索与筛选功能</li>
+<li>直观明了的用户指引</li>
+<li>后台管理系统、后台管理系统、后台管理系统</li>
+<li>提前完成开发，预留充足的时间进行测试</li>
+<li>支持一键添加微信好友，为避免造成用户骚扰，仅支持在合理的情况下，面对合理的对象，方可一键添加微信好友</li>
+<li>优化视觉上的过渡效果</li>
+<li>现有暗恋匹配功能太过干涩，可在匹配成功后增添能让用户惊喜的元素</li>
+<li>关于我们页的展示形式</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/产品/" rel="tag"># 产品</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/08/16/cscw-summer/" rel="next" title="记一次协同前端的捞仔夏令营">
+                <i class="fa fa-chevron-left"></i> 记一次协同前端的捞仔夏令营
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/10/01/helloworld/" rel="prev" title="你好啊，黄鱼韬又重开博客啦！">
+                你好啊，黄鱼韬又重开博客啦！ <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="http://7xkefx.com1.z0.glb.clouddn.com/hyt.jpg"
+                alt="Bauklotzen" />
+            
+              <p class="site-author-name" itemprop="name">Bauklotzen</p>
+              <p class="site-description motion-element" itemprop="description">Bauklotzen's Blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="http://weibo.com/bauklotzen" target="_blank" title="Weibo">
+                      
+                        <i class="fa fa-fw fa-globe"></i>Weibo</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="http://zhihu.com/people/bauklotzen" target="_blank" title="ZhiHu">
+                      
+                        <i class="fa fa-fw fa-globe"></i>ZhiHu</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-总体简介"><span class="nav-number">1.</span> <span class="nav-text">1. 总体简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-详细数据"><span class="nav-number">2.</span> <span class="nav-text">2. 详细数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-数据分析"><span class="nav-number">3.</span> <span class="nav-text">3. 数据分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-竞品分析"><span class="nav-number">4.</span> <span class="nav-text">4. 竞品分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-用户的主要反馈"><span class="nav-number">5.</span> <span class="nav-text">5. 用户的主要反馈</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-4-0-展望"><span class="nav-number">6.</span> <span class="nav-text">6. 4.0 展望</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Bauklotzen</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

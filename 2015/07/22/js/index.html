@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hyt.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/hyt.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/hyt.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/hyt.ico?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Web前端," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="执行上下文定义：每当控制器到达 JavaScript 可执行代码的时候，控制器就进入了一个执行上下文。执行上下文是个抽象的概念。 一系列活动的执行上下文从逻辑上形成一个栈。栈底总是全局上下文，栈顶是当前（活动的）执行上下文。当在不同的执行上下文间切换（退出的而进入新的执行上下文）的时候，栈会被修改（通过压栈或者退栈的形式）。 如果将执行上下文的栈以数组的形式来表现。 JsStack = [] 每次">
+<meta name="keywords" content="Web前端">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript 学习笔记之执行上下文、作用域、作用域链以及 call() 和 apply() 的用法">
+<meta property="og:url" content="http://yoursite.com/2015/07/22/js/index.html">
+<meta property="og:site_name" content="Bauklotzen&#39;s Blog">
+<meta property="og:description" content="执行上下文定义：每当控制器到达 JavaScript 可执行代码的时候，控制器就进入了一个执行上下文。执行上下文是个抽象的概念。 一系列活动的执行上下文从逻辑上形成一个栈。栈底总是全局上下文，栈顶是当前（活动的）执行上下文。当在不同的执行上下文间切换（退出的而进入新的执行上下文）的时候，栈会被修改（通过压栈或者退栈的形式）。 如果将执行上下文的栈以数组的形式来表现。 JsStack = [] 每次">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://pic002.cnblogs.com/images/2011/36987/2011090414435366.jpg">
+<meta property="og:image" content="http://pic002.cnblogs.com/images/2011/36987/2011090414444843.jpg">
+<meta property="og:updated_time" content="2018-03-12T13:12:29.571Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JavaScript 学习笔记之执行上下文、作用域、作用域链以及 call() 和 apply() 的用法">
+<meta name="twitter:description" content="执行上下文定义：每当控制器到达 JavaScript 可执行代码的时候，控制器就进入了一个执行上下文。执行上下文是个抽象的概念。 一系列活动的执行上下文从逻辑上形成一个栈。栈底总是全局上下文，栈顶是当前（活动的）执行上下文。当在不同的执行上下文间切换（退出的而进入新的执行上下文）的时候，栈会被修改（通过压栈或者退栈的形式）。 如果将执行上下文的栈以数组的形式来表现。 JsStack = [] 每次">
+<meta name="twitter:image" content="http://pic002.cnblogs.com/images/2011/36987/2011090414435366.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/07/22/js/"/>
+
+
+
+
+
+  <title>JavaScript 学习笔记之执行上下文、作用域、作用域链以及 call() 和 apply() 的用法 | Bauklotzen's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Bauklotzen's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">笔记 | 机器学习 | 杂谈</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/07/22/js/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Bauklotzen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xkefx.com1.z0.glb.clouddn.com/hyt.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bauklotzen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">JavaScript 学习笔记之执行上下文、作用域、作用域链以及 call() 和 apply() 的用法</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-07-22T09:24:15+08:00">
+                2015-07-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="执行上下文"><a href="#执行上下文" class="headerlink" title="执行上下文"></a><strong>执行上下文</strong></h2><h3 id="定义："><a href="#定义：" class="headerlink" title="定义："></a><em>定义：</em></h3><p>每当控制器到达 JavaScript 可执行代码的时候，控制器就进入了一个执行上下文。<br>执行上下文是个抽象的概念。</p>
+<p>一系列活动的执行上下文从逻辑上形成一个栈。栈底总是全局上下文，栈顶是当前（活动的）执行上下文。当在不同的执行上下文间切换（退出的而进入新的执行上下文）的时候，栈会被修改（通过压栈或者退栈的形式）。</p>
+<p>如果将执行上下文的栈以数组的形式来表现。</p>
+<p><code>JsStack = []</code></p>
+<p>每次控制器进入一个函数（哪怕该函数被递归调用或者作为构造器），都会发生压栈的操作。</p>
+<p>当一开始初始化代码的时候，先是全局代码压入栈中。</p>
+<pre><code>JsStack = [
+  globalContext
+]
+</code></pre><p>定义一个函数 foo</p>
+<pre><code>function foo() {
+  return;
+}
+foo();
+</code></pre><p>一旦控制器进入这个函数，就会有新的元素会被压栈到栈顶。</p>
+<pre><code>JsStack = [
+  functionContext,
+  globalContext
+]
+</code></pre><p>每次函数返回，退出当前活动的执行上下文时，JsStack 就会被执行对应的退栈操作。当完成之后 foo() 之后，JsStack 就只剩下一个执行上下文–globalContext，直到整个程序结束。</p>
+<p>资料来源：</p>
+<p><a href="http://goddyzhao.tumblr.com/post/10020230352/execution-context" target="_blank" rel="noopener">http://goddyzhao.tumblr.com/post/10020230352/execution-context</a></p>
+<hr>
+<h2 id="作用域"><a href="#作用域" class="headerlink" title="作用域"></a><strong>作用域</strong></h2><p>作用域有全局作用域和局部作用域两个概念。</p>
+<p>其中，处于局部作用域内可以访问全局作用域的变量，而处于局部作用域外面是不可以访问局部作用域内的变量的。</p>
+<p>先来看下下面的一段代码：</p>
+<pre><code>var globalData = &quot;This is a global data&quot;;//全局变量
+
+function globalFunction() {
+    var localData = &quot;This is a locall data&quot;//局部变量
+    console.log(globalData);//打印出&quot;This is a global data&quot;，说明可以访问到全局变量
+    console.log(localData);//打印出&quot;This is a locall data&quot;
+    globalData = &quot;Changed the global data&quot;;//修改全局变量
+    console.log(globalData);打印出&quot;Changed the global data&quot;，修改全局变量成功
+    function innerFunction() {
+        var innerData = &quot;This is a inner data&quot;;
+        console.log(innerData);
+        console.log(localData);//打印出&quot;This is a locall data&quot;
+        console.log(globalData);//打印出&quot;Changed the global data&quot;，说明可以访问到全局变量
+    }
+    innerFunction();
+    //console.log(innerData);如果取消注释这句话，则会出现错误
+}
+
+globalFunction();
+</code></pre><p>注释为实际打印出来的效果，因此我们可以看到：处于全局作用域的变量 globalData 可以在局部作用域内访问，并且可以在局部作用域内修改其值。但如果在 globalFunction() 外部去访问 locallData 这个局部变量的话，则会报错。</p>
+<p>透过 innerFunction() 可以进一步理解作用域的概念。当我们在局部作用域 globalFunction() 内访问更深一层次的局部内局部作用域 innerFunction() 里的 innderData 变量时，出现了错误。</p>
+<hr>
+<h2 id="作用域链"><a href="#作用域链" class="headerlink" title="作用域链"></a><strong>作用域链</strong></h2><p>我们已经知道，在 JavaScript 里一切皆为对象。函数也是对象，拥有一些属性和一系列给 JavaScript 引擎访问的内部属性，其中有一个内部属性是 [[scope]] ，这个内部属性包含了函数被创建时作用域中所有对象的集合，这个集合就是函数的作用域链–[[scope]]，它决定了函数可以访问哪些数据。</p>
+<p>当一个函数创建后，它的 [[scope]] 就会填充其可以访问的数据对象。</p>
+<p>如下面的函数：</p>
+<pre><code>function add(num1,num2) {
+    var sum = num1 + num2;
+    return sum;
+}
+</code></pre><p>当函数 add 刚被创建时， [[scope]] 中会填入一个包含所有全局变量的全局对象。</p>
+<p><img src="http://pic002.cnblogs.com/images/2011/36987/2011090414435366.jpg" alt="add 刚被创建时的作用域链"></p>
+<p>当函数 add 在执行时，会增加几个变量，在执行函数的过程中会被用到，例如：</p>
+<pre><code>var total = add(5,10);
+</code></pre><p>执行函数的时候就会创建前文所提到的执行上下文了，这也是它的一个内部对象。执行上下文定义了函数执行时的环境，其作用域链用来解析标识符（即变量的名字）</p>
+<p>这个时候，执行函数 <code>add(5, 10)</code> 的作用域链会被初始化为 [[scope]] 所包含的对象。</p>
+<p>其执行上下文中所出现的变量会在函数中按顺序复制到作用域链中，这些变量组成了一个叫做“活动对象(activation object)”的对象</p>
+<p>活动对包含了所有局部变量、命名参数、参数集合、this，然后此对象推入作用域链的前端。</p>
+<p><img src="http://pic002.cnblogs.com/images/2011/36987/2011090414444843.jpg" alt="执行函数时的作用域链"></p>
+<p>当执行上下文销毁后，活动对象也会销毁。</p>
+<p>在函数执行过程中，每遇到一个变量，都会经历一次标识符解析过程以决定从哪里获取和存储数据。该过程从作用域链头部，也就是从活动对象开始搜索，查找同名的标识符，如果找到了就使用这个标识符对应的变量，如果没找到继续搜索作用域链中的下一个对象，如果搜索完所有对象都未找到，则认为该标识符未定义。函数执行过程中，每个标识符都要经历这样的搜索过程。</p>
+<p><strong>从作用域链看代码优化</strong></p>
+<p>我们已经知道了作用域链的结构，在执行一个函数的过程，我们读取一个变量的值，通过标识符去查找，如果标识符的位置很深，那么读取其值的速度就会很慢。因此，查找全局变量是一个很耗费时间的做法，但如果我们需要多次读写某个全局变量时，我们可以采取一个方法：通过一次查找，把它保存在某个局部变量中，再对其进行操作。</p>
+<p>参考资料：</p>
+<p><a href="http://www.cnblogs.com/lhb25/archive/2011/09/06/javascript-scope-chain.html" target="_blank" rel="noopener">http://www.cnblogs.com/lhb25/archive/2011/09/06/javascript-scope-chain.html</a></p>
+<p><a href="https://github.com/goddyZhao/Translation/blob/master/JavaScript/%E4%BD%9C%E7%94%A8%E5%9F%9F%E9%93%BE%EF%BC%88Scope%20Chain%EF%BC%89.md" target="_blank" rel="noopener">https://github.com/goddyZhao/Translation/blob/master/JavaScript/%E4%BD%9C%E7%94%A8%E5%9F%9F%E9%93%BE%EF%BC%88Scope%20Chain%EF%BC%89.md</a></p>
+<hr>
+<h2 id="call-和-apply-方法的补充"><a href="#call-和-apply-方法的补充" class="headerlink" title="call() 和 apply() 方法的补充"></a><strong>call() 和 apply() 方法的补充</strong></h2><h3 id="定义：-1"><a href="#定义：-1" class="headerlink" title="定义："></a><em>定义</em>：</h3><p><strong>call</strong>:调用一个对象的一个方法，以另一个对象替换当前对象。</p>
+<p><strong>apply</strong>:应用某一对象的一个方法，用另一个对象替换当前对象。</p>
+<p>根据定义我们可以知道 call() 和 apply() 都是用来改变引用对象的。</p>
+<p>还是通过代码来讲最直接，示例如下，我们首先创建一个对象，它拥有 talk 这个方法</p>
+<pre><code>var low = {
+    word: &apos;Hey&apos;,
+    talk: function(people) {
+      console.log(this.word + &apos;,&apos; + people);
+      console.log(this === low);
+    }
+};
+</code></pre><p>我们先直接通过 low 对象来引用这个方法    </p>
+<pre><code>low.talk(&apos;LaoWen&apos;); 
+</code></pre><p>浏览器输出：</p>
+<pre><code>Hey,LaoWen
+true
+</code></pre><p>可以看出当前 this 指向的是引用 talk 方法的 low 对象。</p>
+<p>我们另外创建一个对象 fish ：</p>
+<pre><code>var fish = {
+    word: &apos;Hi&apos;
+};
+</code></pre><p>这个时候通过使用 call 方法来使得 fish 这个对象也能使用 talk 方法</p>
+<pre><code>low.talk.call(fish, &apos;BaoJun&apos;);
+</code></pre><p>浏览器输出：</p>
+<pre><code>Hi,BaoJun
+false
+</code></pre><p>从控制台打印的 false 可以知道 call 方法将引用 talk 方法的对象不是 low 了。call 方法已经将引用对象改成了 fish 。</p>
+<h2 id="call-与-apply-的不同"><a href="#call-与-apply-的不同" class="headerlink" title="call 与 apply 的不同"></a><strong>call 与 apply 的不同</strong></h2><p>call 方法与 apply 方法的不同就是 call 方法第二个传递的参数值可以是任意的，而 apply 方法第二个传递的参数值必须为数组。</p>
+<p>例：</p>
+<pre><code>low.talk.call(fish, &apos;BaoJun&apos;);
+low.talk.apply(fish, [&apos;BaoJun&apos;]);
+</code></pre><p>以上两行代码效果相同。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Web前端/" rel="tag"># Web前端</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/07/13/css/" rel="next" title="CSS 的一些常见重点、难点">
+                <i class="fa fa-chevron-left"></i> CSS 的一些常见重点、难点
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/08/16/cscw-summer/" rel="prev" title="记一次协同前端的捞仔夏令营">
+                记一次协同前端的捞仔夏令营 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="http://7xkefx.com1.z0.glb.clouddn.com/hyt.jpg"
+                alt="Bauklotzen" />
+            
+              <p class="site-author-name" itemprop="name">Bauklotzen</p>
+              <p class="site-description motion-element" itemprop="description">Bauklotzen's Blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="http://weibo.com/bauklotzen" target="_blank" title="Weibo">
+                      
+                        <i class="fa fa-fw fa-globe"></i>Weibo</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="http://zhihu.com/people/bauklotzen" target="_blank" title="ZhiHu">
+                      
+                        <i class="fa fa-fw fa-globe"></i>ZhiHu</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#执行上下文"><span class="nav-number">1.</span> <span class="nav-text">执行上下文</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#定义："><span class="nav-number">1.1.</span> <span class="nav-text">定义：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#作用域"><span class="nav-number">2.</span> <span class="nav-text">作用域</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#作用域链"><span class="nav-number">3.</span> <span class="nav-text">作用域链</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#call-和-apply-方法的补充"><span class="nav-number">4.</span> <span class="nav-text">call() 和 apply() 方法的补充</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#定义：-1"><span class="nav-number">4.1.</span> <span class="nav-text">定义：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#call-与-apply-的不同"><span class="nav-number">5.</span> <span class="nav-text">call 与 apply 的不同</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Bauklotzen</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hyt.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/hyt.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/hyt.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/hyt.ico?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Web前端," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="从接触前端以来，一直有听到所谓的响应式网页设计，但实际上对其概念也只是一知半解，大概只知道响应式网页设计就是能在各种分辨率下网页的依然能有良好的表现效果。刚好今年在做工作室的招新网站的时候，刚好面临响应式网页设计的需求，借此机会对响应式网页设计有了深一点的理解。如有写得不好或者不对的地方，欢迎留言补充，谢谢指教！  有几种响应式的方法？###1. 使用 CSS3 的媒体查询这种方法是使用 CSS3">
+<meta name="keywords" content="Web前端">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅谈响应式网页设计">
+<meta property="og:url" content="http://yoursite.com/2015/05/10/fixedpage/index.html">
+<meta property="og:site_name" content="Bauklotzen&#39;s Blog">
+<meta property="og:description" content="从接触前端以来，一直有听到所谓的响应式网页设计，但实际上对其概念也只是一知半解，大概只知道响应式网页设计就是能在各种分辨率下网页的依然能有良好的表现效果。刚好今年在做工作室的招新网站的时候，刚好面临响应式网页设计的需求，借此机会对响应式网页设计有了深一点的理解。如有写得不好或者不对的地方，欢迎留言补充，谢谢指教！  有几种响应式的方法？###1. 使用 CSS3 的媒体查询这种方法是使用 CSS3">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-03-12T13:26:56.960Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="浅谈响应式网页设计">
+<meta name="twitter:description" content="从接触前端以来，一直有听到所谓的响应式网页设计，但实际上对其概念也只是一知半解，大概只知道响应式网页设计就是能在各种分辨率下网页的依然能有良好的表现效果。刚好今年在做工作室的招新网站的时候，刚好面临响应式网页设计的需求，借此机会对响应式网页设计有了深一点的理解。如有写得不好或者不对的地方，欢迎留言补充，谢谢指教！  有几种响应式的方法？###1. 使用 CSS3 的媒体查询这种方法是使用 CSS3">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/05/10/fixedpage/"/>
+
+
+
+
+
+  <title>浅谈响应式网页设计 | Bauklotzen's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Bauklotzen's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">笔记 | 机器学习 | 杂谈</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/10/fixedpage/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Bauklotzen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xkefx.com1.z0.glb.clouddn.com/hyt.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bauklotzen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">浅谈响应式网页设计</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-10T16:21:29+08:00">
+                2015-05-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>从接触前端以来，一直有听到所谓的响应式网页设计，但实际上对其概念也只是一知半解，大概只知道响应式网页设计就是能在各种分辨率下网页的依然能有良好的表现效果。刚好今年在做工作室的招新网站的时候，刚好面临响应式网页设计的需求，借此机会对响应式网页设计有了深一点的理解。如有写得不好或者不对的地方，欢迎留言补充，谢谢指教！</p>
+<hr>
+<h2 id="有几种响应式的方法？"><a href="#有几种响应式的方法？" class="headerlink" title="有几种响应式的方法？"></a>有几种响应式的方法？</h2><p>###<strong>1.</strong> 使用 CSS3 的媒体查询<br>这种方法是使用 CSS3 进行媒体查询，对应不同的分辨率设置不同的 CSS 属性。举个栗子：</p>
+<pre><code>@media screen and (max-width: 960px){
+    body {
+        background: #000;
+    }
+}   
+</code></pre><p>这段代码的意思就是在页面小于 960 px 的时候执行 {} 内的 CSS 代码。</p>
+<p>另外值得一提的是，上述代码中添加的 <strong>screen</strong> 是指当设备在打印页面时使用衬线字体，在屏幕上显示时用无衬线字体。因此，如果所写的页面不考虑打印的情况的话，可以去掉它。</p>
+<p>由此我们可以知道当使用这种方法时，我们需要考虑许多种不同分辨率的情况。</p>
+<p>所以使用这种方法的优点有：<br>1.针对性。对不同分辨率的设备有不同的预定义的一套 CSS 代码<br>2.易用性。这种方法通俗易懂，出现了哪些分辨率的问题可以很快想到解决办法<br>3.主流。这是目前应用最多的自适应网页设计方案</p>
+<p>缺点有：<br>1.复杂性。需要对不同设备率分辨率编写多套 CSS 代码。越细致的自适应网页可能代码数量越庞大，这会导致不易维护<br>2.需要多套设计图。对设计师的要求较高，设计师需要对不同分辨率的设备出几套设计图。</p>
+<p>###<strong>2.</strong>固定宽高比<br>招新网页用的就是这种方法。其大概意思就是，将页面主要内容（背景可占满整个页面）限定在一个固定的宽高比例中，页面内容的元素的定位，大小等全部用百分比的形式来描述，这样就实现了任意分辨率下，页面内容都是等比例缩小或放大的。</p>
+<p>限定页面内容的宽高比例用到了 Javascript 去动态的检测设备的分辨率。</p>
+<p>现将找新页面检测分辨率的代码抽象，如下:</p>
+<p>首先设置页面内容的类名为 animate-container<br><code>&lt;div class=&quot;animate-container&quot;&gt;</code></p>
+<p>Javascript 代码</p>
+<pre><code>function fixedPage(x,y) {
+  var oHeight = $window.height(),//窗口高度
+oWidth = $window.width(),//窗口宽度
+      cWidth = oHeight * (x/y),//等比例宽度
+      oMargin = (oWidth - cWidth)/2,//左右外间距
+      $container = $(&apos;.animate-container&apos;);
+  $container.css({&apos;width&apos;:cWidth,&apos;height&apos;:oHeight,&apos;left&apos;:oMargin});//设置高度为窗口高度，宽度为等比例缩放宽度，并居中显示
+}
+</code></pre><p>最后，招新项目中图片的宽高比为 750/1206<br>所以<br><code>fixedPage(750,1206);</code></p>
+<hr>
+<p>##招新页面链接<br><a href="http://www.gdutcscw.com/" target="_blank" rel="noopener">http://www.gdutcscw.com/</a></p>
+<hr>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Web前端/" rel="tag"># Web前端</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/06/10/wishwall/" rel="prev" title="女生节许愿墙 3.0 产品文档 V0.0">
+                女生节许愿墙 3.0 产品文档 V0.0 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="http://7xkefx.com1.z0.glb.clouddn.com/hyt.jpg"
+                alt="Bauklotzen" />
+            
+              <p class="site-author-name" itemprop="name">Bauklotzen</p>
+              <p class="site-description motion-element" itemprop="description">Bauklotzen's Blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="http://weibo.com/bauklotzen" target="_blank" title="Weibo">
+                      
+                        <i class="fa fa-fw fa-globe"></i>Weibo</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="http://zhihu.com/people/bauklotzen" target="_blank" title="ZhiHu">
+                      
+                        <i class="fa fa-fw fa-globe"></i>ZhiHu</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#有几种响应式的方法？"><span class="nav-number">1.</span> <span class="nav-text">有几种响应式的方法？</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Bauklotzen</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

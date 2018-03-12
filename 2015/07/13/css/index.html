@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hyt.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/hyt.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/hyt.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/hyt.ico?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Web前端," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="margin &amp;amp; padding 用法首先解释一下什么是 margin 根据 w3school 的定义：margin 简写属性在一个声明中设置所有外边距属性。该属性可以有 1 到 4 个值。 其可能的值有：auto        浏览器计算外边距。length        规定以具体单位计的外边距值，比如像素、厘米等。默认值是 0px。%            规定基于父元素的宽度的百分">
+<meta name="keywords" content="Web前端">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSS 的一些常见重点、难点">
+<meta property="og:url" content="http://yoursite.com/2015/07/13/css/index.html">
+<meta property="og:site_name" content="Bauklotzen&#39;s Blog">
+<meta property="og:description" content="margin &amp;amp; padding 用法首先解释一下什么是 margin 根据 w3school 的定义：margin 简写属性在一个声明中设置所有外边距属性。该属性可以有 1 到 4 个值。 其可能的值有：auto        浏览器计算外边距。length        规定以具体单位计的外边距值，比如像素、厘米等。默认值是 0px。%            规定基于父元素的宽度的百分">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-03-12T13:14:40.069Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CSS 的一些常见重点、难点">
+<meta name="twitter:description" content="margin &amp;amp; padding 用法首先解释一下什么是 margin 根据 w3school 的定义：margin 简写属性在一个声明中设置所有外边距属性。该属性可以有 1 到 4 个值。 其可能的值有：auto        浏览器计算外边距。length        规定以具体单位计的外边距值，比如像素、厘米等。默认值是 0px。%            规定基于父元素的宽度的百分">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/07/13/css/"/>
+
+
+
+
+
+  <title>CSS 的一些常见重点、难点 | Bauklotzen's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Bauklotzen's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">笔记 | 机器学习 | 杂谈</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/07/13/css/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Bauklotzen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xkefx.com1.z0.glb.clouddn.com/hyt.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bauklotzen's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">CSS 的一些常见重点、难点</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-07-13T21:25:15+08:00">
+                2015-07-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="margin-amp-padding-用法"><a href="#margin-amp-padding-用法" class="headerlink" title="margin &amp; padding 用法"></a>margin &amp; padding 用法</h2><p>首先解释一下什么是 <strong>margin</strong></p>
+<p>根据 w3school 的定义：<br>margin 简写属性在一个声明中设置所有外边距属性。该属性可以有 1 到 4 个值。</p>
+<p>其可能的值有：<br><strong>auto</strong>        浏览器计算外边距。<br><strong>length</strong>        规定以具体单位计的外边距值，比如像素、厘米等。默认值是 0px。<br><strong>%</strong>            规定基于父元素的宽度的百分比的外边距。<br><strong>inherit</strong>        规定应该从父元素继承外边距。</p>
+<p>注意事项：<br>设置 4 个值时遵循 TRBL 规则，即 top right bottom left 上 右 下 左 的瞬时间规则。<br>设置 2 个值时，第一个值表示 上 下 一致使用的同一个值，第二个值表示 左 右 一致使用的同一个值。比如</p>
+<pre><code>margin: 1px 2px; 
+margin: 1px 2px 1px 2px;
+</code></pre><p>上面两个是等效的</p>
+<p>特殊用法：</p>
+<pre><code>margin: 0 auto;
+</code></pre><p>意为上下边距为 0 ，左右边距根据宽度自适应。以上写法可以达到居中的效果。(但要注意给居中的元素一个宽度，并且该元素不能浮动，否则居中无效)</p>
+<p>现在来解释下 <strong>padding</strong></p>
+<p>根据 w3school 的定义：<br>这个简写属性设置元素所有内边距的宽度，或者设置各边上内边距的宽度。行内非替换元素上设置的内边距不会影响行高计算；因此，如果一个元素既有内边距又有背景，从视觉上看可能会延伸到其他行，有可能还会与其他内容重叠。元素的背景会延伸穿过内边距。不允许指定负边距值。</p>
+<p>其值的设定和 <strong>margin</strong> 类似，但不允许设置为<strong>负值</strong>。</p>
+<hr>
+<h2 id="border-的占位"><a href="#border-的占位" class="headerlink" title="border 的占位"></a>border 的占位</h2><p>当给某一元素设置四条等宽的 <strong>border</strong> 时，值得注意的是，边的起点为<strong>没有设置 border 时元素的最左上角那一点</strong>。元素的宽度与高度不变，但其位置相比没有设置边时，会被设置的边往右下方挤。 </p>
+<hr>
+<h2 id="行内元素和块级元素"><a href="#行内元素和块级元素" class="headerlink" title="行内元素和块级元素"></a>行内元素和块级元素</h2><p><em>以下内容来自百度</em></p>
+<p>块级元素具有以下特点：</p>
+<p>1.总是在新行上开始，占据一整行；<br>2.高度，行高以及外边距和内边距都可控制；<br>3.宽带始终是与浏览器宽度一样，与内容无关；<br>4.它可以容纳内联元素和其他块元素。</p>
+<p>行内元素的特点：</p>
+<p>1.和其他元素都在一行上；<br>2.高，行高及外边距和内边距部分可改变；<br>3.宽度只与内容有关；<br>4.行内元素只能容纳文本或者其他行内元素。<br>不可以设置宽高，其宽度随着内容增加，高度随字体大小而改变，内联元素可以设置外边界，但是外边界不对上下起作用，只能对左右起作用，也可以设置内边界，但是内边界在ie6中不对上下起作用，只能对左右起作用</p>
+<p>值得一提的是，块级元素可以通过设置为 display: inline-block; 使其可以在行内容纳其他行内元素。</p>
+<p>以下链接记录了哪些是行内元素，哪些是块级元素<br><a href="http://q.cnblogs.com/q/36975/" target="_blank" rel="noopener">http://q.cnblogs.com/q/36975/</a></p>
+<hr>
+<h2 id="absolute-amp-relative-amp-fixed-的区别"><a href="#absolute-amp-relative-amp-fixed-的区别" class="headerlink" title="absolute &amp; relative &amp; fixed 的区别"></a>absolute &amp; relative &amp; fixed 的区别</h2><p>讲到 <strong>absolute</strong> 时需要先知道文档流的概念。</p>
+<p>简单来说，文档流是文档中可显示对象在排列时所占用的位置。</p>
+<p>当给某元素设置 position 为 absolute 时，它会<strong>脱离原来的文档流</strong>，就好像这个元素不存在了一样，漂浮在其<strong>没有设置为 absolute 时的文档位置的地方</strong>，其他元素会占据其原来的位置。也就是说 <strong>absolute</strong> 是相对<strong>最近 position 为 relative 或 absolute 的父元素</strong>定位，默认相对与 <strong>body</strong> 定位。</p>
+<p>而设置为 <strong>relative</strong> 时，元素并没有脱离文档流，这个时候给其设置 <strong>top</strong> 跟 <strong>left</strong> 值，它只会在原来位置的基础上进行肉眼上的移动，而其在文档流上的位置并没有发生改变。</p>
+<p><strong>fixed</strong> 将元素直接以浏览器窗口为定位对象，给其设置 <strong>top</strong> 跟 <strong>left</strong> 值时，元素将相对固定在浏览器窗口的对应位置上（起点为浏览器窗口的最左上方那一个点）</p>
+<hr>
+<h2 id="盒子模型"><a href="#盒子模型" class="headerlink" title="盒子模型"></a>盒子模型</h2><p><em>以下内容来自百科</em></p>
+<p>网页设计中常听的属性名：内容(content)、填充(padding)、边框(border)、边界(margin)， CSS盒子模式都具备这些属性。</p>
+<p>这些属性我们可以把它转移到我们日常生活中的盒子（箱子）上来理解，日常生活中所见的盒子也就是能装东西的一种箱子，也具有这些属性，所以叫它盒子模式。<br>CSS盒子模型就是在网页设计中经常用到的CSS技术所使用的一种思维模型。</p>
+<p>每个盒子都有：边界、边框、填充、内容四个属性；<br>每个属性都包括四个部分：上、右、下、左；这四部分可同时设置，也可分别设置；里的抗震辅料厚度，而边框有大小和颜色之分，我们又可以理解为生活中所见盒子的厚度以及这个盒子是用什么颜色材料做成的，边界就是该盒子与其它东西要保留多大距离。</p>
+<p>内容（CONTENT）就是盒子里装的东西；<br>而填充(PADDING)就是怕盒子里装的东西（贵重的）损坏而添加的泡沫或者其它抗震的辅料；<br>边框(BORDER)就是盒子本身了；至于边界(MARGIN)则说明盒子摆放的时候的不能全部堆在一起，要留一定空隙保持通风，同时也为了方便取出。在网页设计上，内容常指文字、图片等元素，但是也可以是小盒子（DIV嵌套），与现实生活中盒子不同的是，现实生活中的东西一般不能大于盒子，否则盒子会被撑坏的，而CSS盒子具有弹性，里面的东西大过盒子本身最多把它撑大，但它不会损坏的。<br>填充只有宽度属性，可以理解为生活中盒子每个HTML标记都可看作一个盒子；</p>
+<hr>
+<h2 id="选择器优先级"><a href="#选择器优先级" class="headerlink" title="选择器优先级"></a>选择器优先级</h2><p>优先级从高到低排序如下：</p>
+<p>1.在属性后面使用 !important 的优先级最高，它会覆盖页面内任何位置定义的元素样式（不支持 IE6）</p>
+<p>2.在html中给元素标签加 style ，但不符合结构与样式分离的原则，故不推荐使用</p>
+<p>3.id选择器</p>
+<p>4.类选择器、属性选择器、伪类选择器定义（伪类概念：<a href="http://www.w3school.com.cn/css/css_pseudo_classes.asp" target="_blank" rel="noopener">http://www.w3school.com.cn/css/css_pseudo_classes.asp</a>）</p>
+<p>5.类型选择器</p>
+<p>6.通配选择器</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Web前端/" rel="tag"># Web前端</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/06/10/wishwall/" rel="next" title="女生节许愿墙 3.0 产品文档 V0.0">
+                <i class="fa fa-chevron-left"></i> 女生节许愿墙 3.0 产品文档 V0.0
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/07/22/js/" rel="prev" title="JavaScript 学习笔记之执行上下文、作用域、作用域链以及 call() 和 apply() 的用法">
+                JavaScript 学习笔记之执行上下文、作用域、作用域链以及 call() 和 apply() 的用法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="http://7xkefx.com1.z0.glb.clouddn.com/hyt.jpg"
+                alt="Bauklotzen" />
+            
+              <p class="site-author-name" itemprop="name">Bauklotzen</p>
+              <p class="site-description motion-element" itemprop="description">Bauklotzen's Blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="http://weibo.com/bauklotzen" target="_blank" title="Weibo">
+                      
+                        <i class="fa fa-fw fa-globe"></i>Weibo</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="http://zhihu.com/people/bauklotzen" target="_blank" title="ZhiHu">
+                      
+                        <i class="fa fa-fw fa-globe"></i>ZhiHu</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#margin-amp-padding-用法"><span class="nav-number">1.</span> <span class="nav-text">margin &amp; padding 用法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#border-的占位"><span class="nav-number">2.</span> <span class="nav-text">border 的占位</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#行内元素和块级元素"><span class="nav-number">3.</span> <span class="nav-text">行内元素和块级元素</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#absolute-amp-relative-amp-fixed-的区别"><span class="nav-number">4.</span> <span class="nav-text">absolute &amp; relative &amp; fixed 的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#盒子模型"><span class="nav-number">5.</span> <span class="nav-text">盒子模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#选择器优先级"><span class="nav-number">6.</span> <span class="nav-text">选择器优先级</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Bauklotzen</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
